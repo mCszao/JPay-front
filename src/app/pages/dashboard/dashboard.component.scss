@@ -1,0 +1,205 @@
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-card,
+  .recent-accounts-card {
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+  }
+
+  .chart-card {
+    mat-card-header {
+      background-color: #f8f9fa;
+      padding: 20px 24px;
+      border-bottom: 1px solid #e0e0e0;
+
+      mat-card-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a1a1a;
+      }
+    }
+
+    mat-card-content {
+      padding: 24px !important;
+    }
+
+    .chart-container {
+      display: flex;
+      justify-content: center;
+      margin: 16px 0;
+
+      ::ng-deep {
+        .ngx-charts {
+          .pie-label {
+            font-size: 12px;
+            font-weight: 600;
+          }
+
+          .tooltip-anchor {
+            fill: rgba(0, 0, 0, 0.8);
+          }
+        }
+      }
+    }
+
+    .chart-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid #e0e0e0;
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px;
+        border-radius: 8px;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: #f5f5f5;
+        }
+
+        .legend-color {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+
+        .legend-name {
+          flex: 1;
+          font-size: 14px;
+          color: #666;
+          font-weight: 500;
+        }
+
+        .legend-value {
+          font-size: 14px;
+          font-weight: 700;
+          color: #1a1a1a;
+        }
+      }
+    }
+  }
+
+  .recent-accounts-card {
+    mat-card-header {
+      background-color: #f8f9fa;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      mat-card-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a1a1a;
+      }
+
+      mat-card-subtitle {
+        button {
+          font-weight: 600;
+        }
+      }
+    }
+
+    mat-card-content {
+      padding: 0 !important;
+    }
+
+    .accounts-list {
+      .account-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: #f8f9fa;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .account-info {
+          flex: 1;
+
+          h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 6px 0;
+            color: #1a1a1a;
+          }
+
+          p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+            font-weight: 500;
+          }
+        }
+
+        .account-details {
+          text-align: right;
+          margin-left: 16px;
+
+          .account-amount {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            color: black;
+          }
+
+          .status-chip {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    gap: 16px;
+
+    .recent-accounts-card {
+      .accounts-list {
+        .account-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+
+          .account-details {
+            text-align: left;
+            margin-left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+        }
+      }
+    }
+  }
+}
+

@@ -1,0 +1,13 @@
+ <mat-card class="summary-card balance-card">
+    <mat-card-content>
+      <div class="card-content">
+        <div class="card-icon">
+          <mat-icon>{{materialIconName}}</mat-icon>
+        </div>
+        <div class="card-info">
+          <p class="card-label">{{labelText}}</p>
+          <p class="card-value">{{ formatCurrency(amount) }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+</mat-card>
