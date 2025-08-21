@@ -1,0 +1,81 @@
+:host {
+  display: block;
+  /* garante que o conteúdo do dialog não encoste nas bordas do viewport */
+  padding: 4px;
+}
+
+/* Wrapper do formulário dentro do dialog */
+.dialog-form {
+  display: grid;
+  gap: 14px;
+  padding: 16px;               /* padding interno consistente */
+  width: min(520px, 92vw);     /* fluido: pega o menor entre 520px e 92vw */
+  box-sizing: border-box;      /* inclui padding no cálculo da largura */
+}
+
+/* Título do dialog (mat-dialog-title) */
+::ng-deep .mat-mdc-dialog-title,
+h2[mat-dialog-title] {
+  margin: 0;                   /* zera margin default */
+  padding: 16px 16px 0 16px;   /* afasta do topo e laterais */
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* Conteúdo do dialog (onde está o form) */
+::ng-deep .mat-mdc-dialog-content {
+  padding: 0 16px 8px 16px;    /* alinha com o título e roda-pé */
+  margin: 0;                   /* remove possíveis margens */
+}
+
+/* Rodapé/ações do dialog */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 16px 16px 16px;   /* igual ao título e conteúdo */
+  margin-top: 4px;
+}
+
+/* Campos ocupam largura total */
+.full { width: 100%; }
+
+/* Ajustes de visual do Material */
+::ng-deep .mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color: #e5e7eb;
+  --mdc-outlined-text-field-focus-outline-color: #1976d2;
+}
+
+::ng-deep .mdc-text-field--outlined {
+  border-radius: 10px;
+}
+
+/* Responsivo: reduz padding e gaps em telas estreitas */
+@media (max-width: 480px) {
+  .dialog-form {
+    width: 100%;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  ::ng-deep .mat-mdc-dialog-title,
+  h2[mat-dialog-title] {
+    padding: 12px 12px 0 12px;
+    font-size: 16px;
+  }
+
+  ::ng-deep .mat-mdc-dialog-content {
+    padding: 0 12px 6px 12px;
+  }
+
+  .actions {
+    padding: 0 12px 12px 12px;
+    gap: 8px;
+  }
+}
+
+/* Evita que o dialog “cole” nas bordas em devices muito estreitos */
+::ng-deep .cdk-overlay-pane .mat-mdc-dialog-surface {
+  border-radius: 16px;
+}

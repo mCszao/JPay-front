@@ -1,0 +1,35 @@
+<div class="list-card">
+  <div class="list-header">
+    <span>Banco</span>
+    <span></span>
+    <span></span>
+    <span>Saldo</span>
+    <span>Status</span>
+    <span class="actions-col">Ações</span>
+  </div>
+
+  @if (items?.length) {
+    <div class="list-body">
+      @for (a of items; track a.id) {
+        <div class="list-row">
+          <span class="cell-strong">{{ a.bankName }}</span>
+          <span class="cell-mono"></span>
+          <span></span>
+          <span class="cell-strong">R$ {{ a.balance | number: '1.2-2' }}</span>
+          <span>
+            <span class="chip" [class.chip-green]="a.active" [class.chip-gray]="!a.active">
+              {{ a.active ? 'Ativa' : 'Inativa' }}
+            </span>
+          </span>
+          <div class="row-actions">
+            <button class="btn ghost" (click)="edit.emit(a)">Editar</button>
+            <button class="btn ghost" (click)="toggle.emit(a)">{{ a.active ? 'Desativar' : 'Ativar' }}</button>
+            <button class="btn danger" (click)="remove.emit(a)">Excluir</button>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="empty"><p>Nenhuma conta bancária encontrada.</p></div>
+  }
+</div>

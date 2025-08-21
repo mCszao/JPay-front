@@ -1,0 +1,75 @@
+<h2 mat-dialog-title>
+  {{ data.mode === 'create' ? 'Nova Conta a Pagar' : 'Editar Conta a Pagar' }}
+</h2>
+
+<form [formGroup]="form" class="dialog-form" (ngSubmit)="save()">
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Título</mat-label>
+    <input matInput formControlName="title" maxlength="120" required />
+    <mat-hint align="end">{{ form.get('title')?.value?.length || 0 }}/120</mat-hint>
+
+    @if (form.get('title')?.hasError('required') && (form.get('title')?.dirty || form.get('title')?.touched)) {
+      <mat-error>O título é obrigatório.</mat-error>
+    }
+    @if (form.get('title')?.hasError('maxlength')) {
+      <mat-error>Máximo de 120 caracteres.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Descrição</mat-label>
+    <textarea matInput rows="3" formControlName="description" maxlength="300"></textarea>
+    <mat-hint align="end">{{ form.get('description')?.value?.length || 0 }}/300</mat-hint>
+
+    @if (form.get('description')?.hasError('maxlength')) {
+      <mat-error>Máximo de 300 caracteres.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Categoria</mat-label>
+    <mat-select formControlName="category" required>
+      @for (c of data.categories; track c) {
+        <mat-option [value]="c">{{ c }}</mat-option>
+      }
+    </mat-select>
+    @if (form.get('category')?.hasError('required') && (form.get('category')?.dirty || form.get('category')?.touched)) {
+      <mat-error>Selecione uma categoria.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Vencimento</mat-label>
+    <input matInput type="date" formControlName="dueDate" required />
+    @if (form.get('dueDate')?.hasError('required') && (form.get('dueDate')?.dirty || form.get('dueDate')?.touched)) {
+      <mat-error>Informe a data de vencimento.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Valor</mat-label>
+    <input matInput type="number" step="0.01" formControlName="amount" required />
+    @if (form.get('amount')?.hasError('required') && (form.get('amount')?.dirty || form.get('amount')?.touched)) {
+      <mat-error>Informe o valor.</mat-error>
+    }
+    @if (form.get('amount')?.hasError('min')) {
+      <mat-error>O valor deve ser maior que zero.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Status</mat-label>
+    <mat-select formControlName="status" required>
+      @for (s of statusOptions; track s) {
+        <mat-option [value]="s">{{ s }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-button type="button" (click)="close()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+      {{ data.mode === 'create' ? 'Adicionar' : 'Salvar' }}
+    </button>
+  </div>
+</form>

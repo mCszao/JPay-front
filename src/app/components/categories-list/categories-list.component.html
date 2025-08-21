@@ -1,0 +1,35 @@
+<div class="list-card">
+  <div class="list-header">
+    <span>Categoria</span>
+    <span>Descrição</span>
+    <span></span>
+    <span>Status</span>
+    <span></span>
+    <span class="actions-col">Ações</span>
+  </div>
+
+  @if (items?.length) {
+    <div class="list-body">
+      @for (c of items; track c.id) {
+        <div class="list-row">
+          <span class="cell-strong">{{ c.name }}</span>
+          <span class="cell-muted">{{ c.description }}</span>
+          <span></span>
+           <span>
+            <span class="chip" [class.chip-green]="c.active" [class.chip-gray]="!c.active">
+              {{ c.active ? 'Ativo' : 'Inativo' }}
+            </span>
+          </span>
+          <span></span>
+          <div class="row-actions">
+            <button class="btn ghost" (click)="edit.emit(c)">Editar</button>
+            <button class="btn ghost" (click)="toggle.emit(c)">{{ c.active ? 'Desativar' : 'Ativar' }}</button>
+            <button class="btn danger" (click)="remove.emit(c)">Excluir</button>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="empty"><p>Nenhuma categoria encontrada.</p></div>
+  }
+</div>

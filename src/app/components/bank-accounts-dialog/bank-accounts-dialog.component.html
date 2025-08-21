@@ -1,0 +1,55 @@
+<h2 mat-dialog-title>
+  {{ data.mode === 'create' ? 'Nova Conta Bancária' : 'Editar Conta Bancária' }}
+</h2>
+
+<form [formGroup]="form" class="dialog-form" (ngSubmit)="save()">
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Banco</mat-label>
+    <input matInput formControlName="bankName" maxlength="100" required />
+    <mat-hint align="end">{{ form.get('bankName')?.value?.length || 0 }}/100</mat-hint>
+
+    @if (form.get('bankName')?.hasError('required') && (form.get('bankName')?.dirty || form.get('bankName')?.touched)) {
+      <mat-error>O nome do banco é obrigatório.</mat-error>
+    }
+    @if (form.get('bankName')?.hasError('maxlength')) {
+      <mat-error>Máximo de 100 caracteres.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Nº da Conta</mat-label>
+    <input matInput formControlName="accountNumber" maxlength="30" required />
+    <mat-hint align="end">{{ form.get('accountNumber')?.value?.length || 0 }}/30</mat-hint>
+
+    @if (form.get('accountNumber')?.hasError('required') && (form.get('accountNumber')?.dirty || form.get('accountNumber')?.touched)) {
+      <mat-error>O número da conta é obrigatório.</mat-error>
+    }
+    @if (form.get('accountNumber')?.hasError('maxlength')) {
+      <mat-error>Máximo de 30 caracteres.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Tipo de Conta</mat-label>
+    <mat-select formControlName="accountType" required>
+      @for (t of accountTypes; track t) {
+        <mat-option [value]="t">{{ t }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Saldo Inicial</mat-label>
+    <input matInput type="number" formControlName="balance" step="0.01" />
+    @if (form.get('balance')?.hasError('min')) {
+      <mat-error>O saldo não pode ser negativo.</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-button type="button" (click)="close()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+      {{ data.mode === 'create' ? 'Adicionar' : 'Salvar' }}
+    </button>
+  </div>
+</form>

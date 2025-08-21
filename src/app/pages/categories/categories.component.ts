@@ -1,37 +1,21 @@
 import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatFormFieldModule, } from '@angular/material/form-field';
-import { MatProgressSpinnerModule, } from '@angular/material/progress-spinner';
+import { MatDialog } from '@angular/material/dialog';
+
 import { MainContainerComponent } from "../../components/main-container/main-container.component";
 import { PageHeaderComponent } from "../../components/page-header/page-header.component";
-
-
-
-export interface Category {
-  id: number;
-  name: string;
-  description: string;
-  active: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CategoryFormData {
-  name: string;
-  description: string;
-}
+import { SummaryCardsContainerComponent } from "../../components/summary-cards-container/summary-cards-container.component";
+import { SummaryCardComponent } from "../../components/summary-card/summary-card.component";
+import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
+import { Category } from '../../interfaces/Category';
+import { CategoryFormData } from '../../interfaces/CategoryFormData';
+import { CategoriesListComponent } from "../../components/categories-list/categories-list.component";
+import { CategoryDialogComponent, CategoryDialogData } from '../../components/category-dialog/category-dialog.component';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [MatPaginatorModule, MatToolbarModule, MatIconModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatFormFieldModule, MatProgressSpinnerModule, MainContainerComponent, PageHeaderComponent],
+  imports: [ MainContainerComponent, PageHeaderComponent, SummaryCardsContainerComponent, SummaryCardComponent, SearchBarComponent, CategoriesListComponent, CategoryDialogComponent],
 templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.scss']
 })
@@ -85,7 +69,50 @@ export class CategoriesComponent {
       active: false,
       createdAt: '2024-01-05T10:00:00Z',
       updatedAt: '2024-01-15T10:00:00Z'
-    }
+    },{
+      id: 5,
+      name: 'Educação',
+      description: 'Cursos, livros e material educacional',
+      active: true,
+      createdAt: '2024-01-10T10:00:00Z',
+      updatedAt: '2024-01-10T10:00:00Z'
+    },{
+      id: 5,
+      name: 'Educação',
+      description: 'Cursos, livros e material educacional',
+      active: true,
+      createdAt: '2024-01-10T10:00:00Z',
+      updatedAt: '2024-01-10T10:00:00Z'
+    },{
+      id: 5,
+      name: 'Educação',
+      description: 'Cursos, livros e material educacional',
+      active: true,
+      createdAt: '2024-01-10T10:00:00Z',
+      updatedAt: '2024-01-10T10:00:00Z'
+    },{
+      id: 5,
+      name: 'Educação',
+      description: 'Cursos, livros e material educacional',
+      active: true,
+      createdAt: '2024-01-10T10:00:00Z',
+      updatedAt: '2024-01-10T10:00:00Z'
+    },{
+      id: 5,
+      name: 'Educação',
+      description: 'Cursos, livros e material educacional',
+      active: true,
+      createdAt: '2024-01-10T10:00:00Z',
+      updatedAt: '2024-01-10T10:00:00Z'
+    },{
+      id: 5,
+      name: 'Educação',
+      description: 'Cursos, livros e material educacional',
+      active: true,
+      createdAt: '2024-01-10T10:00:00Z',
+      updatedAt: '2024-01-10T10:00:00Z'
+    },
+
   ];
 
   filteredCategories: Category[] = [];
@@ -93,20 +120,13 @@ export class CategoriesComponent {
   showInactive: boolean = false;
   isLoading: boolean = false;
 
-  // Pagination
-  pageSize: number = 10;
-  currentPage: number = 0;
   totalCategories: number = 0;
 
-  // Table columns
-  displayedColumns: string[] = ['name', 'description', 'status', 'createdAt', 'actions'];
 
   constructor(
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar
-  ) { }
-
-  ngOnInit(): void {
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
+  ) {
     this.loadCategories();
   }
 
@@ -125,7 +145,7 @@ export class CategoriesComponent {
     }, 500);
   }
 
-  onSearch(): void {
+  onSearch(event: any): void {
     if (this.searchTerm.trim()) {
       this.filteredCategories = this.categories.filter(category =>
         category.name.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
@@ -136,27 +156,30 @@ export class CategoriesComponent {
     }
   }
 
+  onFilterChange(event: any): void {
+
+  }
+
   onToggleInactive(): void {
     this.loadCategories();
   }
 
   onNewCategory(): void {
-    // TODO: Abrir modal de criação
-    // const dialogRef = this.dialog.open(CategoryFormComponent, {
-    //   width: '500px',
-    //   data: { isEdit: false }
-    // });
+  const ref = this.dialog.open<CategoryDialogComponent, CategoryDialogData, { name: string; description: string }>(
+    CategoryDialogComponent,
+    {
+      data: { mode: 'create' },
+      autoFocus: false
+    }
+  );
 
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.createCategory(result);
-    //   }
-    // });
+  ref.afterClosed().subscribe(formData => {
+    if (!formData) return;
+    this.createCategory(formData);
+  });
+}
 
-    this.showSnackBar('Funcionalidade em desenvolvimento', 'info');
-  }
-
-  onEditCategory(category: Category): void {
+  onEditCategory(event: any): void {
     // TODO: Abrir modal de edição
     // const dialogRef = this.dialog.open(CategoryFormComponent, {
     //   width: '500px',
@@ -169,11 +192,11 @@ export class CategoriesComponent {
     //   }
     // });
 
-    this.showSnackBar(`Editar categoria: ${category.name}`, 'info');
+    this.showSnackBar(`Editar categoria: ${event.name}`, 'info');
   }
 
-  onToggleStatus(category: Category): void {
-    const action = category.active ? 'desativar' : 'ativar';
+  onToggleStatus(event: any): void {
+    // const action = category.active ? 'desativar' : 'ativar';
 
     // TODO: Implementar chamada da API
     // if (category.active) {
@@ -182,22 +205,22 @@ export class CategoriesComponent {
     //   this.categoryService.activateCategory(category.id).subscribe(...)
     // }
 
-    category.active = !category.active;
-    category.updatedAt = new Date().toISOString();
+    // category.active = !category.active;
+    // category.updatedAt = new Date().toISOString();
 
-    this.showSnackBar(`Categoria ${action}da com sucesso!`, 'success');
+    this.showSnackBar(`Categoria ${event}da com sucesso!`, 'success');
     this.loadCategories();
   }
 
-  onDeleteCategory(category: Category): void {
-    if (confirm(`Tem certeza que deseja excluir a categoria "${category.name}"?`)) {
-      // TODO: Implementar chamada da API
-      // this.categoryService.deleteCategory(category.id).subscribe(...)
+  onDeleteCategory(event: any): void {
+    // if (confirm(`Tem certeza que deseja excluir a categoria "${category.name}"?`)) {
+    //   // TODO: Implementar chamada da API
+    //   // this.categoryService.deleteCategory(category.id).subscribe(...)
 
-      this.categories = this.categories.filter(c => c.id !== category.id);
-      this.loadCategories();
-      this.showSnackBar('Categoria excluída com sucesso!', 'success');
-    }
+    //   this.categories = this.categories.filter(c => c.id !== category.id);
+    //   this.loadCategories();
+    //   this.showSnackBar('Categoria excluída com sucesso!', 'success');
+    // }
   }
 
   private createCategory(formData: CategoryFormData): void {
@@ -247,11 +270,6 @@ export class CategoriesComponent {
     return active ? '#4CAF50' : '#757575';
   }
 
-  onPageChange(event: any): void {
-    this.currentPage = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.loadCategories();
-  }
 
   private showSnackBar(message: string, type: 'success' | 'error' | 'info'): void {
     const config = {

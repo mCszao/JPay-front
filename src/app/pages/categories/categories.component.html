@@ -1,3 +1,26 @@
 <app-main-container>
   <app-page-header page-name="Categorias" page-description="Gerencia as categorias das suas contas"></app-page-header>
+  <app-summary-cards-container>
+    <app-summary-card label-text="Total Receitas" material-icon-name="warning" [amount]="1000.67"></app-summary-card>
+    <app-summary-card label-text="Total Receitas" material-icon-name="warning" [amount]="1000.67"></app-summary-card>
+    <app-summary-card label-text="Total Receitas" material-icon-name="warning" [amount]="1000.67"></app-summary-card>
+    <app-summary-card label-text="Total Receitas" material-icon-name="warning" [amount]="1000.67"></app-summary-card>
+
+  </app-summary-cards-container>
+
+  <app-search-bar
+  placeholder="Buscar categorias pelo nome..."
+  filterLabel="Todas as categorias"
+  addButtonLabel="+ Nova Categoria"
+  (search)="onSearch($event)"
+  (add)="onNewCategory()"
+  [showFilter]="true"
+></app-search-bar>
+
+<app-categories-list
+  [items]="filteredCategories"
+  (edit)="onEditCategory($event)"
+  (toggle)="onToggleStatus($event)"
+  (remove)="onDeleteCategory($event)"
+></app-categories-list>
 </app-main-container>

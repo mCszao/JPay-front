@@ -1,0 +1,40 @@
+<div class="list-card">
+  <div class="list-header">
+    <span>Título</span>
+    <span>Categoria</span>
+    <span>Vencimento</span>
+    <span>Valor</span>
+    <span>Status</span>
+    <span class="actions-col">Ações</span>
+  </div>
+
+  @if (items?.length) {
+    <div class="list-body">
+      @for (ap of items; track ap.id) {
+        <div class="list-row">
+          <span class="cell-strong">{{ ap.title }}</span>
+          <span class="cell-muted">{{ ap.category }}</span>
+          <span>{{ ap.dueDate | date: 'dd/MM/yyyy' }}</span>
+          <span class="cell-strong">R$ {{ ap.amount | number: '1.2-2' }}</span>
+          <span>
+            <span class="chip"
+              [class.chip-green]="ap.status === 'PAGO'"
+              [class.chip-yellow]="ap.status === 'PENDENTE'"
+              [class.chip-red]="ap.status === 'VENCIDO'">
+              {{ ap.status }}
+            </span>
+          </span>
+          <div class="row-actions">
+            <button class="btn ghost" (click)="edit.emit(ap)">Editar</button>
+            <button class="btn ghost" (click)="toggleStatus.emit(ap)">
+              {{ ap.status === 'PAGO' ? 'Marcar pendente' : 'Marcar pago' }}
+            </button>
+            <button class="btn danger" (click)="remove.emit(ap)">Excluir</button>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="empty"><p>Nenhuma conta a pagar encontrada.</p></div>
+  }
+</div>
