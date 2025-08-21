@@ -127,7 +127,7 @@ export class DashboardComponent {
   getStatusColor(status: string): string {
     switch (status) {
       case 'PAID': return '#2cad31ff';
-      case 'PENDING': return '#FF9800';
+      case 'PENDING': return '#ff9900c7';
       case 'OVERDUE': return '#F44336';
       default: return 'none';
     }

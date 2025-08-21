@@ -52,8 +52,7 @@
             <div class="account-details">
               <p class="account-amount">{{ formatCurrency(account.amount) }}</p>
               <mat-chip
-                [style.background-color]="getStatusColor(account.status) + '20'"
-                [style.color]="getStatusColor(account.status)"
+                [style.background-color]="getStatusColor(account.status)"
                 class="status-chip">
                 {{ getStatusText(account.status) }}
               </mat-chip>
