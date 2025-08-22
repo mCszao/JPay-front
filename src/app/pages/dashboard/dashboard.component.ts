@@ -10,6 +10,9 @@ import { SummaryCardsContainerComponent } from '../../components/summary-cards-c
 import { PageHeaderComponent } from "../../components/page-header/page-header.component";
 import { MainContainerComponent } from '../../components/main-container/main-container.component';
 import { AccountPayable } from '../../interfaces/AccountPayable';
+import { CategoryTotals } from '../../interfaces/CategoryTotals';
+import { CategoryService } from '../../services/category/category.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 export interface SummaryData {
   totalBalance: number;
   totalAccounts: number;
@@ -17,11 +20,6 @@ export interface SummaryData {
   paidThisMonth: number;
 }
 
-export interface ChartData {
-  name: string;
-  value: number;
-  color: string;
-}
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -38,14 +36,7 @@ export class DashboardComponent {
     paidThisMonth: 12850.30
   };
 
-  chartData: ChartData[] = [
-    { name: 'Alimentação', value: 3500, color: '#FF6B6B' },
-    { name: 'Transporte', value: 2800, color: '#4ECDC4' },
-    { name: 'Moradia', value: 4200, color: '#45B7D1' },
-    { name: 'Saúde', value: 1800, color: '#96CEB4' },
-    { name: 'Educação', value: 2200, color: '#FFEAA7' },
-    { name: 'Outros', value: 1500, color: '#DDA0DD' }
-  ];
+  categories: CategoryTotals[] = []
 
   recentAccounts: AccountPayable[] = [
     {
@@ -90,10 +81,10 @@ export class DashboardComponent {
     }
   ];
 
-  constructor() { }
-
-  ngOnInit(): void {
-    // Aqui você pode chamar os serviços para buscar dados reais da API
+  constructor(
+    private categoryService: CategoryService,
+    private snackBar: MatSnackBar
+  ) {
     this.loadDashboardData();
   }
 
@@ -101,7 +92,14 @@ export class DashboardComponent {
     // TODO: Implementar chamadas para os serviços
     // this.bankAccountService.getTotalBalance().subscribe(...)
     // this.accountService.getAccountsSummary().subscribe(...)
-    // this.categoryService.getExpensesByCategory().subscribe(...)
+    this.categoryService.expensesByCategory().subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: (error: any) => {
+        this.showSnackBar(error, "error");
+      }
+    })
   }
 
   formatCurrency(value: number): string {
@@ -141,5 +139,14 @@ export class DashboardComponent {
   onViewAllAccounts(): void {
     // TODO: Navegar para a página de listagem de contas
     // this.router.navigate(['/accounts']);
+  }
+
+  private showSnackBar(message: string, type: 'success' | 'error' | 'info'): void {
+    const config = {
+      duration: 3000,
+      panelClass: [`snackbar-${type}`]
+    };
+
+    this.snackBar.open(message, 'Fechar', config);
   }
 }

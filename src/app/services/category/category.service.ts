@@ -7,6 +7,7 @@ import { Category } from '../../interfaces/Category';
 import { PageResponse } from '../../interfaces/PageResponse';
 import { SpringPageable } from '../../interfaces/SpringPageable';
 import { map } from 'rxjs/operators';
+import { CategoryTotals } from '../../interfaces/CategoryTotals';
 
 @Injectable({
   providedIn: 'root'
@@ -54,5 +55,10 @@ export class CategoryService {
   mostUsed() {
      return this.http
     .get<CategoryResponse>(`${this.URL}/most-used`);
+  }
+
+  expensesByCategory() {
+     return this.http
+    .get<CategoryTotals[]>(`${this.URL}/total`);
   }
 }
