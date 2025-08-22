@@ -50,4 +50,9 @@ export class CategoryService {
 
     return resp;
   }
+
+  mostUsed() {
+     return this.http
+    .get<CategoryResponse>(`${this.URL}/most-used`);
+  }
 }

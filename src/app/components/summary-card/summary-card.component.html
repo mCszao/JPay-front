@@ -6,7 +6,7 @@
         </div>
         <div class="card-info">
           <p class="card-label">{{labelText}}</p>
-          <p class="card-value">{{ formatCurrency(amount) }}</p>
+          <p class="card-value">{{ (name == null || name == "") ? quantity > 0 ? quantity : formatCurrency(amount) : name }}</p>
         </div>
       </div>
     </mat-card-content>

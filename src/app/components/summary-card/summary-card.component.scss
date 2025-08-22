@@ -75,6 +75,11 @@
       background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
       color: #7b1fa2;
     }
+
+     &.yellow-card .card-icon {
+      background: linear-gradient(135deg, #f5f5e5 0%, #e4e7be 100%);
+      color: #9ea21f;
+    }
 }
 
 

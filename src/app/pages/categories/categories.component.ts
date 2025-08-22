@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
 
 import { MainContainerComponent } from "../../components/main-container/main-container.component";
 import { PageHeaderComponent } from "../../components/page-header/page-header.component";
@@ -29,8 +28,9 @@ export class CategoriesComponent {
   showInactive: boolean = false;
   isLoading: boolean = false;
   currentPage: number = 0;
-
-  totalCategories: number = 0;
+  totalActiveCategories = signal(0);
+  totalCategories = signal(0);
+  mostUsedCategorie = signal("")
 
 
   constructor(
@@ -47,6 +47,7 @@ export class CategoriesComponent {
     this.categoryService.getAll(this.currentPage).subscribe({
       next: (categories) => {
         this.filteredCategories = categories.content
+        this.buildStats();
       },
       error: (error: any) => {
         this.showSnackBar(error.message, 'error');
@@ -107,13 +108,13 @@ export class CategoriesComponent {
     this.categoryService.deactivate(category.id).subscribe({
         next: () => {
           this.showSnackBar(`Categoria ${action}da com sucesso!`, 'success');
+          category.active = !category.active;
         },
         error: (error: any) => {
           this.showSnackBar(error.message, 'error');
         }
       })
-
-    category.active = !category.active;
+      this.buildStats();
   }
 
   onDeleteCategory(event: any): void {
@@ -137,6 +138,7 @@ export class CategoriesComponent {
         this.showSnackBar(error.message, 'error');
       }
     })
+    this.buildStats();
   }
 
   private updateCategory(id: number, formData: CategoryFormData): void {
@@ -145,12 +147,13 @@ export class CategoriesComponent {
          const categoryIndex = this.filteredCategories.findIndex(c => c.id === id);
         if (categoryIndex !== -1) {
           this.filteredCategories[categoryIndex] = category;
-         this.showSnackBar('Categoria atualizada com sucesso!', 'success');
+          this.showSnackBar('Categoria atualizada com sucesso!', 'success');
       }},
       error: (error: any) => {
         this.showSnackBar(error.message, 'error');
       }
     })
+    this.buildStats();
   }
 
   formatDate(dateString: string): string {
@@ -165,6 +168,18 @@ export class CategoriesComponent {
     return active ? '#4CAF50' : '#757575';
   }
 
+  buildStats() {
+    this.totalCategories.set(this.filteredCategories.length)
+    this.totalActiveCategories.set(this.filteredCategories.filter(c => c.active).length)
+    this.categoryService.mostUsed().subscribe({
+      next: (category: CategoryResponse) => {
+        this.mostUsedCategorie.set(category.name);
+      }
+      ,error: (error: any) => {
+        this.showSnackBar(error, "error");
+      }
+    })
+  }
 
   private showSnackBar(message: string, type: 'success' | 'error' | 'info'): void {
     const config = {
