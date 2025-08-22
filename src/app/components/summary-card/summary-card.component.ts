@@ -12,7 +12,7 @@ export class SummaryCardComponent {
   @Input("label-text") labelText: string = "";
   @Input("amount") amount: number = 0;
   @Input("material-icon-name") materialIconName: string = "";
-
+  @Input("color") color: string = "";
 
   formatCurrency(value: number): string {
     return new Intl.NumberFormat('pt-BR', {
