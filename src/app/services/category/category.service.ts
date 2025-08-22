@@ -26,7 +26,12 @@ export class CategoryService {
         totalPages: res.totalPages
       }))
     );
-}
+  }
+
+  getAllActive(): Observable<CategoryResponse[]> {
+    return this.http
+    .get<CategoryResponse[]>(`${this.URL}/active`);
+  }
 
   add(category: CategoryFormData): Observable<CategoryResponse> {
     const resp = this.http.post<CategoryResponse>(this.URL, category);

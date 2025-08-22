@@ -3,18 +3,6 @@
 </h2>
 
 <form [formGroup]="form" class="dialog-form" (ngSubmit)="save()">
-  <mat-form-field appearance="outline" class="full">
-    <mat-label>Título</mat-label>
-    <input matInput formControlName="title" maxlength="120" required />
-    <mat-hint align="end">{{ form.get('title')?.value?.length || 0 }}/120</mat-hint>
-
-    @if (form.get('title')?.hasError('required') && (form.get('title')?.dirty || form.get('title')?.touched)) {
-      <mat-error>O título é obrigatório.</mat-error>
-    }
-    @if (form.get('title')?.hasError('maxlength')) {
-      <mat-error>Máximo de 120 caracteres.</mat-error>
-    }
-  </mat-form-field>
 
   <mat-form-field appearance="outline" class="full">
     <mat-label>Descrição</mat-label>
@@ -29,12 +17,24 @@
   <mat-form-field appearance="outline" class="full">
     <mat-label>Categoria</mat-label>
     <mat-select formControlName="category" required>
-      @for (c of data.categories; track c) {
-        <mat-option [value]="c">{{ c }}</mat-option>
+      @for (c of categories; track c) {
+        <mat-option [value]="c.name">{{ c.name }}</mat-option>
       }
     </mat-select>
     @if (form.get('category')?.hasError('required') && (form.get('category')?.dirty || form.get('category')?.touched)) {
       <mat-error>Selecione uma categoria.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Conta Bancária</mat-label>
+    <mat-select formControlName="bankAccount" required>
+      @for (b of bankAccounts; track b) {
+        <mat-option [value]="b.name">{{ b.name }}</mat-option>
+      }
+    </mat-select>
+    @if (form.get('bankAccount')?.hasError('required') && (form.get('bankAccount')?.dirty || form.get('bankAccount')?.touched)) {
+      <mat-error>Selecione uma conta bancária.</mat-error>
     }
   </mat-form-field>
 
@@ -62,6 +62,15 @@
     <mat-select formControlName="status" required>
       @for (s of statusOptions; track s) {
         <mat-option [value]="s">{{ s }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Tipo</mat-label>
+    <mat-select formControlName="type" required>
+      @for (t of transctionsType; track t) {
+        <mat-option [value]="t">{{ t }}</mat-option>
       }
     </mat-select>
   </mat-form-field>

@@ -28,14 +28,14 @@ export class BankAccountService {
     );
 }
 
-  add(category: BankAccountFormData): Observable<BankAccountResponse> {
-    const resp = this.http.post<BankAccountResponse>(this.URL, category);
+  add(bankAccount: BankAccountFormData): Observable<BankAccountResponse> {
+    const resp = this.http.post<BankAccountResponse>(this.URL, bankAccount);
 
     return resp;
   }
 
-  update(id: number, category: BankAccountFormData): Observable<BankAccountResponse>  {
-    const resp = this.http.put<BankAccountResponse>(this.URL+`/${id}`, category);
+  update(id: number, bankAccount: BankAccountFormData): Observable<BankAccountResponse>  {
+    const resp = this.http.put<BankAccountResponse>(this.URL+`/${id}`, bankAccount);
 
     return resp;
   }
@@ -44,5 +44,10 @@ export class BankAccountService {
     const resp = this.http.patch<BankAccountResponse>(this.URL+`/${id}/deactivate`, JSON.stringify({id}));
 
     return resp;
+  }
+
+  getAllActive(): Observable<BankAccountResponse[]> {
+      return this.http
+      .get<BankAccountResponse[]>(`${this.URL}/active`);
   }
 }

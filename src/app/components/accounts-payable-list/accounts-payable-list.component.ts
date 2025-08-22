@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AccountPayableStatus } from '../../types/AccountPayableStatus';
-import { AccountPayable } from '../../interfaces/AccountPayable';
+import { AccountPayableResponse } from '../../interfaces/AccountPayableResponse';
 
 @Component({
   selector: 'app-accounts-payable-list',
@@ -11,8 +10,8 @@ import { AccountPayable } from '../../interfaces/AccountPayable';
   styleUrls: ['../list.shared.scss'],
 })
 export class AccountsPayableListComponent {
-  @Input() items: AccountPayable[] = [];
-  @Output() edit = new EventEmitter<AccountPayable>();
-  @Output() toggleStatus = new EventEmitter<AccountPayable>();
-  @Output() remove = new EventEmitter<AccountPayable>();
+  @Input() items: AccountPayableResponse[] = [];
+  @Output() edit = new EventEmitter<AccountPayableResponse>();
+  @Output() toggleStatus = new EventEmitter<AccountPayableResponse>();
+  @Output() remove = new EventEmitter<AccountPayableResponse>();
 }

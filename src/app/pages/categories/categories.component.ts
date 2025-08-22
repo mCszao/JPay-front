@@ -144,14 +144,7 @@ export class CategoriesComponent {
       next: (category: CategoryResponse) => {
          const categoryIndex = this.filteredCategories.findIndex(c => c.id === id);
         if (categoryIndex !== -1) {
-          this.filteredCategories[categoryIndex] = {
-            name: category.name,
-            description: category.description,
-            active: category.active,
-            createdAt: category.createdAt,
-            updatedAt: category.updatedAt,
-            id: category.id,
-        };
+          this.filteredCategories[categoryIndex] = category;
          this.showSnackBar('Categoria atualizada com sucesso!', 'success');
       }},
       error: (error: any) => {

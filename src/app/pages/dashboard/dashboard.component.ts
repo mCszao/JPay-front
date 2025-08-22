@@ -50,34 +50,42 @@ export class DashboardComponent {
   recentAccounts: AccountPayable[] = [
     {
       id: 1,
-      title: 'Conta de Luz - Janeiro',
+      type: "PASSIVO",
+      bankAccount: "MOOPA",
+      description: 'Conta de Luz - Janeiro',
       amount: 285.50,
       expirationDate: '2024-01-15',
-      status: 'PENDENTE',
+      status: 'PENDING',
       category: 'Moradia'
     },
     {
       id: 2,
-      title: 'Supermercado XYZ',
+      type: "PASSIVO",
+      bankAccount: "MOOPA",
+      description: 'Supermercado XYZ',
       amount: 450.30,
       expirationDate: '2024-01-12',
-      status: 'VENCIDO',
+      status: 'EXPIRED',
       category: 'Alimentação'
     },
     {
       id: 3,
-      title: 'Plano de Saúde',
+      type: "PASSIVO",
+      bankAccount: "MOOPA",
+      description: 'Plano de Saúde',
       amount: 680.00,
       expirationDate: '2024-01-20',
-      status: 'PENDENTE',
+      status: 'PENDING',
       category: 'Saúde'
     },
     {
       id: 4,
-      title: 'Combustível',
+      bankAccount: "MOOPA",
+      type: "PASSIVO",
+      description: 'Combustível',
       amount: 320.75,
       expirationDate: '2024-01-18',
-      status: 'PENDENTE',
+      status: 'PENDING',
       category: 'Transporte'
     }
   ];
@@ -110,7 +118,7 @@ export class DashboardComponent {
   getStatusColor(status: string): string {
     switch (status) {
       case 'PAID': return '#2cad31ff';
-      case 'PENDENTE': return '#ff9900c7';
+      case 'PENDING': return '#ff9900c7';
       case 'OVERDUE': return '#F44336';
       default: return 'none';
     }
@@ -119,7 +127,7 @@ export class DashboardComponent {
   getStatusText(status: string): string {
     switch (status) {
       case 'PAID': return 'Pago';
-      case 'PENDENTE': return 'Pendente';
+      case 'PENDING': return 'Pendente';
       case 'OVERDUE': return 'Vencido';
       default: return status;
     }

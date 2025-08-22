@@ -1,9 +1,10 @@
 <div class="list-card">
   <div class="list-header">
-    <span>Título</span>
+    <span>Descrição</span>
     <span>Categoria</span>
     <span>Vencimento</span>
     <span>Valor</span>
+    <span>Tipo</span>
     <span>Status</span>
     <span class="actions-col">Ações</span>
   </div>
@@ -12,22 +13,23 @@
     <div class="list-body">
       @for (ap of items; track ap.id) {
         <div class="list-row">
-          <span class="cell-strong">{{ ap.title }}</span>
-          <span class="cell-muted">{{ ap.category }}</span>
+          <span class="cell-strong">{{ ap.description }}</span>
+          <span class="cell-muted">{{ ap.category.name }}</span>
           <span>{{ ap.expirationDate | date: 'dd/MM/yyyy' }}</span>
           <span class="cell-strong">R$ {{ ap.amount | number: '1.2-2' }}</span>
           <span>
             <span class="chip"
-              [class.chip-green]="ap.status === 'PAGO'"
-              [class.chip-yellow]="ap.status === 'PENDENTE'"
-              [class.chip-red]="ap.status === 'VENCIDO'">
-              {{ ap.status }}
+              [class.chip-green]="ap.status === 'PAID'"
+              [class.chip-yellow]="ap.status === 'PENDING'"
+              >
+              {{ ap.status === "PAID" ? "PAGO" : "PENDENTE" }}
             </span>
           </span>
+          <span class="cell-strong">{{ap.type}}</span>
           <div class="row-actions">
             <button class="btn ghost" (click)="edit.emit(ap)">Editar</button>
             <button class="btn ghost" (click)="toggleStatus.emit(ap)">
-              {{ ap.status === 'PAGO' ? 'Marcar pendente' : 'Marcar pago' }}
+              {{ ap.status === 'PAID' ? 'Marcar pendente' : 'Marcar pago' }}
             </button>
             <button class="btn danger" (click)="remove.emit(ap)">Excluir</button>
           </div>

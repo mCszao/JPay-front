@@ -6,16 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { DialogData } from '../../interfaces/DialogData';
+import { BankAccount } from '../../interfaces/BankAccount';
 
-export interface BankAccountDialogData {
-  mode: 'create' | 'edit';
-  value?: {
-    bankName: string;
-    accountNumber: string;
-    accountType: 'Corrente' | 'Poupança';
-    balance: number;
-  };
-}
+interface BankAccountDialogData extends DialogData<BankAccount> {}
 
 @Component({
   selector: 'app-bank-accounts-dialog',
@@ -33,7 +27,6 @@ export interface BankAccountDialogData {
 })
 export class BankAccountsDialogComponent {
   form!: FormGroup;
-  accountTypes: Array<'Corrente' | 'Poupança'> = ['Corrente', 'Poupança'];
 
   constructor(
     private fb: FormBuilder,
@@ -41,10 +34,9 @@ export class BankAccountsDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: BankAccountDialogData
   ) {
     this.form = this.fb.group({
-    bankName: [this.data.value?.bankName ?? '', [Validators.required, Validators.maxLength(100)]],
-    accountNumber: [this.data.value?.accountNumber ?? '', [Validators.required, Validators.maxLength(30)]],
-    accountType: [this.data.value?.accountType ?? 'Corrente', [Validators.required]],
-    balance: [this.data.value?.balance ?? 0, [Validators.min(0)]],
+    name: [this.data.value?.name ?? '', [Validators.required, Validators.maxLength(100)]],
+    bank: [this.data.value?.bank ?? '', [Validators.required, Validators.maxLength(100)]],
+    currentBalance: [this.data.value?.currentBalance ?? 0, [Validators.min(0)]],
   });
   }
 

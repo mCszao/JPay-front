@@ -1,1 +1,1 @@
-export type AccountPayableStatus = 'PENDENTE' | 'PAGO' | 'VENCIDO';
+export type AccountPayableStatus = 'PENDING' | 'PAID' | 'EXPIRED';

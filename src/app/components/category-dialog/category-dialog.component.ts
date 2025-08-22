@@ -5,11 +5,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { DialogData } from '../../interfaces/DialogData';
+import { Category } from '../../interfaces/Category';
 
-export interface CategoryDialogData{
-  mode: 'create' | 'edit';
-  value?: { name: string; description: string };
-}
+export interface CategoryDialogData extends DialogData<Category>{}
 
 @Component({
   selector: 'app-category-dialog',
