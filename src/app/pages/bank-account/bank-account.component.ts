@@ -11,6 +11,9 @@ import { BankAccountsListComponent } from "../../components/bank-accounts-list/b
 import { DateService } from '../../services/date/date.service';
 import { BankAccountService } from '../../services/bank-account/bank-account.service';
 import { PageResponse } from '../../interfaces/PageResponse';
+import { BankAccountsDialogComponent } from '../../components/bank-accounts-dialog/bank-accounts-dialog.component';
+import { DialogService } from '../../services/dialog.service';
+import { BankAccountResponse } from '../../interfaces/BankAccountResponse';
 
 
 @Component({
@@ -22,8 +25,7 @@ import { PageResponse } from '../../interfaces/PageResponse';
 })
 export class BankAccountComponent {
 
-  filteredBankAccounts: BankAccount[] = [];
-  searchTerm: string = '';
+  filteredBankAccounts: BankAccountResponse[] = [];
   showInactive: boolean = false;
   isLoading: boolean = false;
   currentPage: number = 0;
@@ -32,7 +34,8 @@ export class BankAccountComponent {
   constructor(
     private snackBar: MatSnackBar,
     private dateService: DateService,
-    private bankAccountService: BankAccountService
+    private bankAccountService: BankAccountService,
+    private dialogService: DialogService
   ) {
     this.loadBankAccounts();
   }
@@ -43,8 +46,11 @@ export class BankAccountComponent {
     this.bankAccountService.getAll(this.currentPage).subscribe({
       next: (data: PageResponse<BankAccount>) => {
         this.filteredBankAccounts = data.content;
+      }, error: (error: any) => {
+        this.showSnackBar(error.message, 'error');
       }
     })
+
     // setTimeout(() => {
     //   this.filteredBankAccounts = this.filteredBankAccounts.filter(account =>
     //     this.showInactive ? true : account.active
@@ -54,43 +60,58 @@ export class BankAccountComponent {
     // }, 500);
   }
 
-  onSearch(event: any): void {
-    if (this.searchTerm.trim()) {
-      this.filteredBankAccounts = this.filteredBankAccounts.filter(account =>
-        (account.name.toLowerCase().includes(this.searchTerm.toLowerCase())) &&
-        (this.showInactive ? true : account.active)
+  onSearch(textInput: string): void {
+   if (textInput.trim()) {
+      this.filteredBankAccounts = this.filteredBankAccounts.filter(bank =>
+        (bank.name.toLowerCase().includes(textInput.toLowerCase()) || bank.bank.toLowerCase().includes(textInput.toLowerCase())) &&
+        (this.showInactive ? true : bank.active)
       );
     } else {
       this.loadBankAccounts();
     }
   }
 
-  onFilterChange(event: any): void {
-    // Implemente filtros adicionais se necessário
-  }
-
-  onToggleInactive(): void {
-    this.loadBankAccounts();
-  }
-
   onNewBankAccount(): void {
     // TODO: Abrir modal de criação
-    this.showSnackBar('Funcionalidade em desenvolvimento', 'info');
+    const ref = this.dialogService.open(BankAccountsDialogComponent, { mode: 'create' });
+
+      ref.afterClosed().subscribe(formData => {
+        if (!formData) return;
+        this.createBankAccount(formData);
+    });
   }
 
-  onEditBankAccount(event: any): void {
-    // TODO: Abrir modal de edição
-    // this.showSnackBar(`Editar conta: ${account.bankName}`, 'info');
+  onEditBankAccount(bankAccount: BankAccount): void {
+    const ref = this.dialogService.open(
+        BankAccountsDialogComponent,
+          {
+            mode: 'edit',
+            value: {
+              name: bankAccount.name,
+              bank: bankAccount.bank,
+              currentBalance: bankAccount.currentBalance,
+            },
+          }
+        );
+
+        ref.afterClosed().subscribe(formData => {
+          if (!formData) return;
+          this.updateBankAccount(bankAccount.id, formData);
+        });
   }
 
-  onToggleStatus(event: any): void {
-    // const action = account.active ? 'desativada' : 'ativada';
+  onToggleStatus(bankAccount: BankAccount): void {
+    const action = bankAccount.active ? 'desativada' : 'ativada';
+    this.bankAccountService.deactivate(bankAccount.id).subscribe({
+      next: () => {
+        this.showSnackBar(`Conta ${action} com sucesso!`, 'success');
+        bankAccount.active = !bankAccount.active
+      },
+      error: (error: any) => {
+        this.showSnackBar(error.message, 'error');
+      }
+    });
 
-    // account.active = !account.active;
-    // account.updatedAt = new Date().toISOString();
-
-    this.showSnackBar(`Conta ${event} com sucesso!`, 'success');
-    this.loadBankAccounts();
   }
 
   onDeleteBankAccount(event: any): void {
@@ -102,31 +123,33 @@ export class BankAccountComponent {
   }
 
   private createBankAccount(formData: BankAccountFormData): void {
-    const newAccount: BankAccount = {
-      id: Math.max(...this.filteredBankAccounts.map(a => a.id)) + 1,
-      name: formData.bankName,
-      currentBalance: formData.balance,
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-
-    this.filteredBankAccounts.push(newAccount);
-    this.loadBankAccounts();
-    this.showSnackBar('Conta criada com sucesso!', 'success');
+    this.bankAccountService.add(formData).subscribe({
+      next: (data: BankAccountResponse) => {
+        this.filteredBankAccounts.push(data);
+        this.showSnackBar('Conta criada com sucesso!', 'success');
+      },
+      error: (error: any) => {
+        this.showSnackBar(error, "error");
+      }
+    })
   }
 
   private updateBankAccount(id: number, formData: BankAccountFormData): void {
-    const accountIndex = this.filteredBankAccounts.findIndex(a => a.id === id);
-    if (accountIndex !== -1) {
-      this.filteredBankAccounts[accountIndex] = {
-        ...this.filteredBankAccounts[accountIndex],
-        ...formData,
-        updatedAt: new Date().toISOString()
-      };
-      this.loadBankAccounts();
-      this.showSnackBar('Conta atualizada com sucesso!', 'success');
-    }
+    this.bankAccountService.update(id, formData).subscribe({
+      next: (data: BankAccountResponse) => {
+        const accountIndex = this.filteredBankAccounts.findIndex(a => a.id === id);
+        if (accountIndex !== -1) {
+          this.filteredBankAccounts[accountIndex] = data;
+          this.showSnackBar('Conta atualizada com sucesso!', 'success');
+        }
+      },
+      error: (error: any) => {
+        this.showSnackBar(error, "error");
+      }
+    })
+
+
+
   }
 
   formatDate(dateString: string): string {

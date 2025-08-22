@@ -27,7 +27,9 @@
           </span>
           <span class="cell-strong">{{ap.type}}</span>
           <div class="row-actions">
-            <button class="btn ghost" (click)="edit.emit(ap)">Editar</button>
+            @if(ap.status === "PENDING") {
+              <button class="btn ghost" (click)="edit.emit(ap)">Editar</button>
+            }
             <button class="btn ghost" (click)="toggleStatus.emit(ap)">
               {{ ap.status === 'PAID' ? 'Marcar pendente' : 'Marcar pago' }}
             </button>
