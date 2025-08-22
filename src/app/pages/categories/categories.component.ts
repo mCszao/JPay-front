@@ -64,7 +64,6 @@ export class CategoriesComponent {
   }
 
   onSearch(textInput: string): void {
-    console.log(textInput)
     if (textInput.trim()) {
       this.filteredCategories = this.filteredCategories.filter(category =>
         category.name.toLowerCase().includes(textInput.toLowerCase()) &&

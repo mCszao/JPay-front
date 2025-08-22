@@ -1,7 +1,7 @@
 <div class="list-card">
   <div class="list-header">
+    <span>Nome</span>
     <span>Banco</span>
-    <span></span>
     <span></span>
     <span>Saldo</span>
     <span>Status</span>
@@ -13,7 +13,7 @@
       @for (a of items; track a.id) {
         <div class="list-row">
           <span class="cell-strong">{{ a.name }}</span>
-          <span class="cell-mono"></span>
+          <span class="cell-strong">{{a.bank}}</span>
           <span></span>
           <span class="cell-strong">R$ {{ a.currentBalance | number: '1.2-2' }}</span>
           <span>
