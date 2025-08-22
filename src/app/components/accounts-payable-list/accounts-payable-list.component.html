@@ -14,7 +14,7 @@
         <div class="list-row">
           <span class="cell-strong">{{ ap.title }}</span>
           <span class="cell-muted">{{ ap.category }}</span>
-          <span>{{ ap.dueDate | date: 'dd/MM/yyyy' }}</span>
+          <span>{{ ap.expirationDate | date: 'dd/MM/yyyy' }}</span>
           <span class="cell-strong">R$ {{ ap.amount | number: '1.2-2' }}</span>
           <span>
             <span class="chip"

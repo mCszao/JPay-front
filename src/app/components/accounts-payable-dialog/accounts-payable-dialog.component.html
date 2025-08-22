@@ -40,8 +40,8 @@
 
   <mat-form-field appearance="outline" class="full">
     <mat-label>Vencimento</mat-label>
-    <input matInput type="date" formControlName="dueDate" required />
-    @if (form.get('dueDate')?.hasError('required') && (form.get('dueDate')?.dirty || form.get('dueDate')?.touched)) {
+    <input matInput type="date" formControlName="expirationDate" required />
+    @if (form.get('expirationDate')?.hasError('required') && (form.get('expirationDate')?.dirty || form.get('expirationDate')?.touched)) {
       <mat-error>Informe a data de vencimento.</mat-error>
     }
   </mat-form-field>

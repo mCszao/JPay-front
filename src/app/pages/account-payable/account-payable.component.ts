@@ -10,72 +10,74 @@ import { AccountPayableStatus } from '../../types/AccountPayableStatus';
 import { AccountsPayableListComponent } from "../../components/accounts-payable-list/accounts-payable-list.component";
 import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
 import { BankAccountsListComponent } from "../../components/bank-accounts-list/bank-accounts-list.component";
+import { DateService } from '../../services/date/date.service';
+
 
 @Component({
   selector: 'app-account-payable.component',
   standalone: true,
-  imports: [MainContainerComponent, PageHeaderComponent, SummaryCardsContainerComponent, SummaryCardComponent, AccountsPayableListComponent, SearchBarComponent, BankAccountsListComponent],
+  imports: [MainContainerComponent, PageHeaderComponent, SummaryCardsContainerComponent, SummaryCardComponent, AccountsPayableListComponent, SearchBarComponent],
   templateUrl: './account-payable.component.html',
   styleUrl: './account-payable.component.scss'
 })
 export class AccountPayableComponent {
-  accounts: AccountPayable[] = [
-    {
-      id: 1,
-      title: 'Conta de Luz - Janeiro',
-      description: 'Consumo mensal',
-      category: 'Moradia',
-      dueDate: '2024-01-15T00:00:00Z',
-      amount: 285.50,
-      status: 'PENDENTE',
-      createdAt: '2024-01-01T10:00:00Z',
-      updatedAt: '2024-01-01T10:00:00Z'
-    },
-    {
-      id: 2,
-      title: 'Supermercado XYZ',
-      description: 'Compras da semana',
-      category: 'Alimentação',
-      dueDate: '2024-01-11T00:00:00Z',
-      amount: 450.30,
-      status: 'VENCIDO',
-      createdAt: '2024-01-05T10:00:00Z',
-      updatedAt: '2024-01-12T10:00:00Z'
-    },
-    {
-      id: 3,
-      title: 'Plano de Saúde',
-      description: 'Mensalidade',
-      category: 'Saúde',
-      dueDate: '2024-01-19T00:00:00Z',
-      amount: 680.00,
-      status: 'PENDENTE',
-      createdAt: '2024-01-07T10:00:00Z',
-      updatedAt: '2024-01-07T10:00:00Z'
-    },
-    {
-      id: 4,
-      title: 'Combustível',
-      description: 'Abastecimento',
-      category: 'Transporte',
-      dueDate: '2024-01-17T00:00:00Z',
-      amount: 320.75,
-      status: 'PENDENTE',
-      createdAt: '2024-01-08T10:00:00Z',
-      updatedAt: '2024-01-08T10:00:00Z'
-    },
-    {
-      id: 5,
-      title: 'Internet Fibra',
-      description: 'Mensalidade',
-      category: 'Moradia',
-      dueDate: '2024-01-09T00:00:00Z',
-      amount: 89.90,
-      status: 'PAGO',
-      createdAt: '2024-01-02T10:00:00Z',
-      updatedAt: '2024-01-09T10:00:00Z'
-    }
-  ];
+  // accounts: AccountPayable[] = [
+  //   {
+  //     id: 1,
+  //     title: 'Conta de Luz - Janeiro',
+  //     description: 'Consumo mensal',
+  //     category: 'Moradia',
+  //     expirationDate: '2024-01-15T00:00:00Z',
+  //     amount: 285.50,
+  //     status: 'PENDENTE',
+  //     createdAt: '2024-01-01T10:00:00Z',
+  //     updatedAt: '2024-01-01T10:00:00Z'
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'Supermercado XYZ',
+  //     description: 'Compras da semana',
+  //     category: 'Alimentação',
+  //     expirationDate: '2024-01-11T00:00:00Z',
+  //     amount: 450.30,
+  //     status: 'VENCIDO',
+  //     createdAt: '2024-01-05T10:00:00Z',
+  //     updatedAt: '2024-01-12T10:00:00Z'
+  //   },
+  //   {
+  //     id: 3,
+  //     title: 'Plano de Saúde',
+  //     description: 'Mensalidade',
+  //     category: 'Saúde',
+  //     expirationDate: '2024-01-19T00:00:00Z',
+  //     amount: 680.00,
+  //     status: 'PENDENTE',
+  //     createdAt: '2024-01-07T10:00:00Z',
+  //     updatedAt: '2024-01-07T10:00:00Z'
+  //   },
+  //   {
+  //     id: 4,
+  //     title: 'Combustível',
+  //     description: 'Abastecimento',
+  //     category: 'Transporte',
+  //     expirationDate: '2024-01-17T00:00:00Z',
+  //     amount: 320.75,
+  //     status: 'PENDENTE',
+  //     createdAt: '2024-01-08T10:00:00Z',
+  //     updatedAt: '2024-01-08T10:00:00Z'
+  //   },
+  //   {
+  //     id: 5,
+  //     title: 'Internet Fibra',
+  //     description: 'Mensalidade',
+  //     category: 'Moradia',
+  //     expirationDate: '2024-01-09T00:00:00Z',
+  //     amount: 89.90,
+  //     status: 'PAGO',
+  //     createdAt: '2024-01-02T10:00:00Z',
+  //     updatedAt: '2024-01-09T10:00:00Z'
+  //   }
+  // ];
 
   filteredAccounts: AccountPayable[] = [];
   searchTerm: string = '';
@@ -86,7 +88,10 @@ export class AccountPayableComponent {
   totalAccounts: number = 0;
   totalDueThisMonth: number = 0;
 
-  constructor(private snackBar: MatSnackBar) {
+  constructor(
+    private snackBar: MatSnackBar,
+    private dateService: DateService
+  ) {
     this.loadAccounts();
   }
 
@@ -95,7 +100,7 @@ export class AccountPayableComponent {
 
     setTimeout(() => {
       // aplica filtros básicos
-      this.filteredAccounts = this.accounts
+      this.filteredAccounts = this.filteredAccounts
         .filter(a => (this.selectedStatus ? a.status === this.selectedStatus : true))
         .filter(a => (this.selectedCategory ? a.category === this.selectedCategory : true));
 
@@ -103,8 +108,7 @@ export class AccountPayableComponent {
       if (this.searchTerm.trim()) {
         const term = this.searchTerm.toLowerCase();
         this.filteredAccounts = this.filteredAccounts.filter(a =>
-          a.title.toLowerCase().includes(term) ||
-          a.description.toLowerCase().includes(term)
+          a.title.toLowerCase().includes(term)
         );
       }
 
@@ -144,7 +148,7 @@ export class AccountPayableComponent {
   onToggleStatus(event: any): void {
     // alterna entre PENDENTE e PAGO; mantém VENCIDO se a data passou
     // if (account.status === 'PAGO') {
-    //   account.status = this.isOverdue(account.dueDate) ? 'VENCIDO' : 'PENDENTE';
+    //   account.status = this.isOverdue(account.expirationDate) ? 'VENCIDO' : 'PENDENTE';
     // } else {
     //   account.status = 'PAGO';
     // }
@@ -163,33 +167,33 @@ export class AccountPayableComponent {
 
   private createAccount(formData: AccountPayableFormData): void {
     const newAccount: AccountPayable = {
-      id: Math.max(...this.accounts.map(a => a.id)) + 1,
+      id: Math.max(...this.filteredAccounts.map(a => a.id)) + 1,
       title: formData.title,
       description: formData.description,
       category: formData.category,
-      dueDate: formData.dueDate,
+      expirationDate: formData.expirationDate,
       amount: formData.amount,
       status: formData.status,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    this.accounts.push(newAccount);
+    this.filteredAccounts.push(newAccount);
     this.loadAccounts();
     this.showSnackBar('Conta criada com sucesso!', 'success');
   }
 
   private updateAccount(id: number, formData: AccountPayableFormData): void {
-    const idx = this.accounts.findIndex(a => a.id === id);
+    const idx = this.filteredAccounts.findIndex(a => a.id === id);
     if (idx !== -1) {
-      this.accounts[idx] = { ...this.accounts[idx], ...formData, updatedAt: new Date().toISOString() };
+      this.filteredAccounts[idx] = { ...this.filteredAccounts[idx], ...formData, updatedAt: new Date().toISOString() };
       this.loadAccounts();
       this.showSnackBar('Conta atualizada com sucesso!', 'success');
     }
   }
 
-  isOverdue(dueDateIso: string): boolean {
+  isOverdue(expirationDateIso: string): boolean {
     const today = new Date();
-    const due = new Date(dueDateIso);
+    const due = new Date(expirationDateIso);
     return due < today && !this.isSameDay(due, today);
     // para considerar vencida se passou do dia
   }
@@ -201,7 +205,7 @@ export class AccountPayableComponent {
   }
 
   formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+    return this.dateService.formatDate(dateString);
   }
 
   getStatusChip(status: AccountPayableStatus): { text: string; class: string } {

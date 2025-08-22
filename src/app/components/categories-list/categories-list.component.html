@@ -2,19 +2,19 @@
   <div class="list-header">
     <span>Categoria</span>
     <span>Descrição</span>
-    <span></span>
+    <span>Data de criação</span>
     <span>Status</span>
     <span></span>
     <span class="actions-col">Ações</span>
   </div>
 
-  @if (items?.length) {
+  @if (items.length) {
     <div class="list-body">
       @for (c of items; track c.id) {
         <div class="list-row">
           <span class="cell-strong">{{ c.name }}</span>
           <span class="cell-muted">{{ c.description }}</span>
-          <span></span>
+          <span>{{ c.createdAt }}</span>
            <span>
             <span class="chip" [class.chip-green]="c.active" [class.chip-gray]="!c.active">
               {{ c.active ? 'Ativo' : 'Inativo' }}

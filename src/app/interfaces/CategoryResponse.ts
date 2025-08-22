@@ -1,7 +1,7 @@
-export interface BankAccount {
+export interface CategoryResponse {
   id: number;
   name: string;
-  currentBalance: number;
+  description: string;
   active: boolean;
   createdAt: string;
   updatedAt: string;

@@ -4,7 +4,7 @@ export interface AccountPayableFormData {
   title: string;
   description: string;
   category: string;
-  dueDate: string;
+  expirationDate: string;
   amount: number;
   status: AccountPayableStatus;
 }

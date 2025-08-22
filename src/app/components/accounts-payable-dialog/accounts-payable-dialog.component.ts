@@ -16,7 +16,7 @@ export interface AccountPayableDialogData {
     title: string;
     description: string;
     category: string;
-    dueDate: string;
+    expirationDate: string;
     amount: number;
     status: AccountPayableStatus;
   };
@@ -50,7 +50,7 @@ export class AccountPayableDialogComponent {
     description: [this.data.value?.description ?? '', [Validators.maxLength(300)]],
     category: [this.data.value?.category ?? '', [Validators.required]],
     // Para input type="date", se vier ISO convertendo para yyyy-MM-dd ajuda no preenchimento
-    dueDate: [this.toInputDate(this.data.value?.dueDate) ?? '', [Validators.required]],
+    expirationDate: [this.toInputDate(this.data.value?.expirationDate) ?? '', [Validators.required]],
     amount: [this.data.value?.amount ?? 0, [Validators.required, Validators.min(0.01)]],
     status: [this.data.value?.status ?? 'PENDENTE', [Validators.required]],
   });
@@ -62,7 +62,7 @@ export class AccountPayableDialogComponent {
 
   save(): void {
     if (this.form.valid) {
-      // Retorna { title, description, category, dueDate, amount, status }
+      // Retorna { title, description, category, expirationDate, amount, status }
       this.ref.close(this.form.value);
     }
   }

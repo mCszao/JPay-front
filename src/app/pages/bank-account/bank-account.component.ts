@@ -8,6 +8,10 @@ import { BankAccount } from '../../interfaces/BankAccount';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BankAccountFormData } from '../../interfaces/BankAccountFormData';
 import { BankAccountsListComponent } from "../../components/bank-accounts-list/bank-accounts-list.component";
+import { DateService } from '../../services/date/date.service';
+import { BankAccountService } from '../../services/bank-account/bank-account.service';
+import { PageResponse } from '../../interfaces/PageResponse';
+
 
 @Component({
   selector: 'app-bank-account.component',
@@ -18,48 +22,17 @@ import { BankAccountsListComponent } from "../../components/bank-accounts-list/b
 })
 export class BankAccountComponent {
 
-  bankAccounts: BankAccount[] = [
-    {
-      id: 1,
-      bankName: 'Banco do Brasil',
-      accountNumber: '12345-6',
-      accountType: 'Corrente',
-      balance: 45250.75,
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },
-    {
-      id: 2,
-      bankName: 'Caixa Econômica',
-      accountNumber: '65432-1',
-      accountType: 'Poupança',
-      balance: 12850.30,
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },
-    {
-      id: 3,
-      bankName: 'Nubank',
-      accountNumber: '98765-4',
-      accountType: 'Corrente',
-      balance: 3200.00,
-      active: false,
-      createdAt: '2024-01-05T10:00:00Z',
-      updatedAt: '2024-01-15T10:00:00Z'
-    }
-  ];
-
   filteredBankAccounts: BankAccount[] = [];
   searchTerm: string = '';
   showInactive: boolean = false;
   isLoading: boolean = false;
-
+  currentPage: number = 0;
   totalBankAccounts: number = 0;
 
   constructor(
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dateService: DateService,
+    private bankAccountService: BankAccountService
   ) {
     this.loadBankAccounts();
   }
@@ -67,20 +40,24 @@ export class BankAccountComponent {
   private loadBankAccounts(): void {
     this.isLoading = true;
 
-    setTimeout(() => {
-      this.filteredBankAccounts = this.bankAccounts.filter(account =>
-        this.showInactive ? true : account.active
-      );
-      this.totalBankAccounts = this.filteredBankAccounts.length;
-      this.isLoading = false;
-    }, 500);
+    this.bankAccountService.getAll(this.currentPage).subscribe({
+      next: (data: PageResponse<BankAccount>) => {
+        this.filteredBankAccounts = data.content;
+      }
+    })
+    // setTimeout(() => {
+    //   this.filteredBankAccounts = this.filteredBankAccounts.filter(account =>
+    //     this.showInactive ? true : account.active
+    //   );
+    //   this.totalBankAccounts = this.filteredBankAccounts.length;
+    //   this.isLoading = false;
+    // }, 500);
   }
 
   onSearch(event: any): void {
     if (this.searchTerm.trim()) {
-      this.filteredBankAccounts = this.bankAccounts.filter(account =>
-        (account.bankName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-         account.accountNumber.includes(this.searchTerm)) &&
+      this.filteredBankAccounts = this.filteredBankAccounts.filter(account =>
+        (account.name.toLowerCase().includes(this.searchTerm.toLowerCase())) &&
         (this.showInactive ? true : account.active)
       );
     } else {
@@ -126,26 +103,24 @@ export class BankAccountComponent {
 
   private createBankAccount(formData: BankAccountFormData): void {
     const newAccount: BankAccount = {
-      id: Math.max(...this.bankAccounts.map(a => a.id)) + 1,
-      bankName: formData.bankName,
-      accountNumber: formData.accountNumber,
-      accountType: formData.accountType,
-      balance: formData.balance,
+      id: Math.max(...this.filteredBankAccounts.map(a => a.id)) + 1,
+      name: formData.bankName,
+      currentBalance: formData.balance,
       active: true,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
 
-    this.bankAccounts.push(newAccount);
+    this.filteredBankAccounts.push(newAccount);
     this.loadBankAccounts();
     this.showSnackBar('Conta criada com sucesso!', 'success');
   }
 
   private updateBankAccount(id: number, formData: BankAccountFormData): void {
-    const accountIndex = this.bankAccounts.findIndex(a => a.id === id);
+    const accountIndex = this.filteredBankAccounts.findIndex(a => a.id === id);
     if (accountIndex !== -1) {
-      this.bankAccounts[accountIndex] = {
-        ...this.bankAccounts[accountIndex],
+      this.filteredBankAccounts[accountIndex] = {
+        ...this.filteredBankAccounts[accountIndex],
         ...formData,
         updatedAt: new Date().toISOString()
       };
@@ -155,9 +130,8 @@ export class BankAccountComponent {
   }
 
   formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+    return this.dateService.formatDate(dateString);
   }
-
   getStatusText(active: boolean): string {
     return active ? 'Ativa' : 'Inativa';
   }

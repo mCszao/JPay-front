@@ -1,16 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AccountPayableStatus } from '../../types/AccountPayableStatus';
-
-
-export interface AccountPayableRow {
-  id: number;
-  title: string;
-  category: string;
-  dueDate: string;
-  amount: number;
-  status: AccountPayableStatus;
-}
+import { AccountPayable } from '../../interfaces/AccountPayable';
 
 @Component({
   selector: 'app-accounts-payable-list',
@@ -20,8 +11,8 @@ export interface AccountPayableRow {
   styleUrls: ['../list.shared.scss'],
 })
 export class AccountsPayableListComponent {
-  @Input() items: AccountPayableRow[] = [];
-  @Output() edit = new EventEmitter<AccountPayableRow>();
-  @Output() toggleStatus = new EventEmitter<AccountPayableRow>();
-  @Output() remove = new EventEmitter<AccountPayableRow>();
+  @Input() items: AccountPayable[] = [];
+  @Output() edit = new EventEmitter<AccountPayable>();
+  @Output() toggleStatus = new EventEmitter<AccountPayable>();
+  @Output() remove = new EventEmitter<AccountPayable>();
 }

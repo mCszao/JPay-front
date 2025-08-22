@@ -33,7 +33,7 @@ export class CategoryDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: CategoryDialogData
   ) {
     this.form = this.fb.group({
-    name: [this.data.value?.name ?? '', [Validators.required, Validators.maxLength(80)]],
+    name: [this.data.value?.name ?? '', [Validators.required, Validators.maxLength(100)]],
     description: [this.data.value?.description ?? '', [Validators.maxLength(200)]],
   });
   }
@@ -44,7 +44,6 @@ export class CategoryDialogComponent {
 
   save(): void {
     if (this.form.valid) {
-      // retorna { name, description }
       this.ref.close(this.form.value);
     }
   }

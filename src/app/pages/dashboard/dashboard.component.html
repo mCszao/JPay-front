@@ -47,7 +47,7 @@
           <div class="account-item" *ngFor="let account of recentAccounts">
             <div class="account-info">
               <h4>{{ account.description }}</h4>
-              <p>{{ account.category }} • Vence em {{ formatDate(account.dueDate) }}</p>
+              <p>{{ account.category }} • Vence em {{ formatDate(account.expirationDate) }}</p>
             </div>
             <div class="account-details">
               <p class="account-amount">{{ formatCurrency(account.amount) }}</p>

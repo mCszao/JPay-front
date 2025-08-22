@@ -5,8 +5,8 @@
 <form [formGroup]="form" class="dialog-form" (ngSubmit)="save()">
   <mat-form-field appearance="outline" class="full">
     <mat-label>Nome</mat-label>
-    <input matInput formControlName="name" maxlength="80" required />
-    <mat-hint align="end">{{ form.get('name')?.value?.length || 0 }}/80</mat-hint>
+    <input matInput formControlName="name" maxlength="100" required />
+    <mat-hint align="end">{{ form.get('name')?.value?.length || 0 }}/100</mat-hint>
 
     @if (form.get('name')?.hasError('required') && (form.get('name')?.dirty || form.get('name')?.touched)) {
       <mat-error>O nome é obrigatório.</mat-error>

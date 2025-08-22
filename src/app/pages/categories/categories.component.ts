@@ -11,144 +11,63 @@ import { Category } from '../../interfaces/Category';
 import { CategoryFormData } from '../../interfaces/CategoryFormData';
 import { CategoriesListComponent } from "../../components/categories-list/categories-list.component";
 import { CategoryDialogComponent, CategoryDialogData } from '../../components/category-dialog/category-dialog.component';
+import { DialogService } from '../../services/dialog.service';
+import { CategoryService } from '../../services/category/category.service';
+import { CategoryResponse } from '../../interfaces/CategoryResponse';
+import { DateService } from '../../services/date/date.service';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [ MainContainerComponent, PageHeaderComponent, SummaryCardsContainerComponent, SummaryCardComponent, SearchBarComponent, CategoriesListComponent, CategoryDialogComponent],
+  imports: [ MainContainerComponent, PageHeaderComponent, SummaryCardsContainerComponent, SummaryCardComponent, SearchBarComponent, CategoriesListComponent],
 templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.scss']
 })
 export class CategoriesComponent {
 
-  categories: Category[] = [
-    {
-      id: 1,
-      name: 'Alimentação',
-      description: 'Gastos com supermercado, restaurantes e delivery',
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },
-    {
-      id: 2,
-      name: 'Transporte',
-      description: 'Combustível, transporte público e manutenção veicular',
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },
-    {
-      id: 3,
-      name: 'Moradia',
-      description: 'Aluguel, condomínio, energia elétrica e água',
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },
-    {
-      id: 4,
-      name: 'Saúde',
-      description: 'Plano de saúde, medicamentos e consultas médicas',
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },
-    {
-      id: 5,
-      name: 'Educação',
-      description: 'Cursos, livros e material educacional',
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },
-    {
-      id: 6,
-      name: 'Lazer',
-      description: 'Cinema, viagens e atividades recreativas',
-      active: false,
-      createdAt: '2024-01-05T10:00:00Z',
-      updatedAt: '2024-01-15T10:00:00Z'
-    },{
-      id: 5,
-      name: 'Educação',
-      description: 'Cursos, livros e material educacional',
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },{
-      id: 5,
-      name: 'Educação',
-      description: 'Cursos, livros e material educacional',
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },{
-      id: 5,
-      name: 'Educação',
-      description: 'Cursos, livros e material educacional',
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },{
-      id: 5,
-      name: 'Educação',
-      description: 'Cursos, livros e material educacional',
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },{
-      id: 5,
-      name: 'Educação',
-      description: 'Cursos, livros e material educacional',
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },{
-      id: 5,
-      name: 'Educação',
-      description: 'Cursos, livros e material educacional',
-      active: true,
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-10T10:00:00Z'
-    },
-
-  ];
-
   filteredCategories: Category[] = [];
-  searchTerm: string = '';
   showInactive: boolean = false;
   isLoading: boolean = false;
+  currentPage: number = 0;
 
   totalCategories: number = 0;
 
 
   constructor(
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialogService: DialogService,
+    private categoryService: CategoryService,
+    private dateService: DateService
   ) {
     this.loadCategories();
   }
 
   private loadCategories(): void {
     this.isLoading = true;
+    this.categoryService.getAll(this.currentPage).subscribe({
+      next: (categories) => {
+        this.filteredCategories = categories.content
+      },
+      error: (error: any) => {
+        this.showSnackBar(error.message, 'error');
+      }
+    })
 
-    // TODO: Substituir por chamada real da API
-    // this.categoryService.getCategories(this.currentPage, this.pageSize).subscribe(...)
-
-    setTimeout(() => {
-      this.filteredCategories = this.categories.filter(category =>
-        this.showInactive ? true : category.active
-      );
-      this.totalCategories = this.filteredCategories.length;
-      this.isLoading = false;
-    }, 500);
+    // TODO:liberar logica de ativos e inativos quando criar o checkbox
+    // setTimeout(() => {
+    //   this.filteredCategories = this.filteredCategories.filter(category =>
+    //     this.showInactive ? true : category.active
+    //   );
+    //   this.totalCategories = this.filteredCategories.length;
+    //   this.isLoading = false;
+    // }, 500);
   }
 
-  onSearch(event: any): void {
-    if (this.searchTerm.trim()) {
-      this.filteredCategories = this.categories.filter(category =>
-        category.name.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
+  onSearch(textInput: string): void {
+    console.log(textInput)
+    if (textInput.trim()) {
+      this.filteredCategories = this.filteredCategories.filter(category =>
+        category.name.toLowerCase().includes(textInput.toLowerCase()) &&
         (this.showInactive ? true : category.active)
       );
     } else {
@@ -156,60 +75,46 @@ export class CategoriesComponent {
     }
   }
 
-  onFilterChange(event: any): void {
-
-  }
-
-  onToggleInactive(): void {
-    this.loadCategories();
-  }
-
   onNewCategory(): void {
-  const ref = this.dialog.open<CategoryDialogComponent, CategoryDialogData, { name: string; description: string }>(
-    CategoryDialogComponent,
-    {
-      data: { mode: 'create' },
-      autoFocus: false
-    }
-  );
+    const ref = this.dialogService.open(CategoryDialogComponent, { mode: 'create' });
 
-  ref.afterClosed().subscribe(formData => {
-    if (!formData) return;
-    this.createCategory(formData);
-  });
+    ref.afterClosed().subscribe(formData => {
+      if (!formData) return;
+      this.createCategory(formData);
+    });
 }
 
-  onEditCategory(event: any): void {
-    // TODO: Abrir modal de edição
-    // const dialogRef = this.dialog.open(CategoryFormComponent, {
-    //   width: '500px',
-    //   data: { isEdit: true, category: category }
-    // });
+  onEditCategory(category: Category): void {
+    const ref = this.dialogService.open(
+    CategoryDialogComponent,
+      {
+        mode: 'edit',
+        value: {
+          name: category.name,
+          description: category.description,
+        },
+      }
+    );
 
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.updateCategory(category.id, result);
-    //   }
-    // });
-
-    this.showSnackBar(`Editar categoria: ${event.name}`, 'info');
+    ref.afterClosed().subscribe(formData => {
+      if (!formData) return;
+      this.updateCategory(category.id, formData);
+    });
   }
 
-  onToggleStatus(event: any): void {
-    // const action = category.active ? 'desativar' : 'ativar';
+  onToggleStatus(category: Category): void {
+    const action = category.active ? 'desativa' : 'ativa';
 
-    // TODO: Implementar chamada da API
-    // if (category.active) {
-    //   this.categoryService.deactivateCategory(category.id).subscribe(...)
-    // } else {
-    //   this.categoryService.activateCategory(category.id).subscribe(...)
-    // }
+    this.categoryService.deactivate(category.id).subscribe({
+        next: () => {
+          this.showSnackBar(`Categoria ${action}da com sucesso!`, 'success');
+        },
+        error: (error: any) => {
+          this.showSnackBar(error.message, 'error');
+        }
+      })
 
-    // category.active = !category.active;
-    // category.updatedAt = new Date().toISOString();
-
-    this.showSnackBar(`Categoria ${event}da com sucesso!`, 'success');
-    this.loadCategories();
+    category.active = !category.active;
   }
 
   onDeleteCategory(event: any): void {
@@ -224,42 +129,40 @@ export class CategoriesComponent {
   }
 
   private createCategory(formData: CategoryFormData): void {
-    // TODO: Implementar chamada da API
-    // this.categoryService.createCategory(formData).subscribe(...)
-
-    const newCategory: Category = {
-      id: Math.max(...this.categories.map(c => c.id)) + 1,
-      name: formData.name,
-      description: formData.description,
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-
-    this.categories.push(newCategory);
-    this.loadCategories();
-    this.showSnackBar('Categoria criada com sucesso!', 'success');
+    this.categoryService.add(formData).subscribe({
+      next: (category: CategoryResponse) => {
+        this.filteredCategories.push(category);
+        this.showSnackBar('Categoria criada com sucesso!', 'success');
+      },
+      error: (error: any) => {
+        this.showSnackBar(error.message, 'error');
+      }
+    })
   }
 
   private updateCategory(id: number, formData: CategoryFormData): void {
-    // TODO: Implementar chamada da API
-    // this.categoryService.updateCategory(id, formData).subscribe(...)
-
-    const categoryIndex = this.categories.findIndex(c => c.id === id);
-    if (categoryIndex !== -1) {
-      this.categories[categoryIndex] = {
-        ...this.categories[categoryIndex],
-        name: formData.name,
-        description: formData.description,
-        updatedAt: new Date().toISOString()
-      };
-      this.loadCategories();
-      this.showSnackBar('Categoria atualizada com sucesso!', 'success');
-    }
+    this.categoryService.update(id, formData).subscribe({
+      next: (category: CategoryResponse) => {
+         const categoryIndex = this.filteredCategories.findIndex(c => c.id === id);
+        if (categoryIndex !== -1) {
+          this.filteredCategories[categoryIndex] = {
+            name: category.name,
+            description: category.description,
+            active: category.active,
+            createdAt: category.createdAt,
+            updatedAt: category.updatedAt,
+            id: category.id,
+        };
+         this.showSnackBar('Categoria atualizada com sucesso!', 'success');
+      }},
+      error: (error: any) => {
+        this.showSnackBar(error.message, 'error');
+      }
+    })
   }
 
   formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+    return this.dateService.formatDate(dateString);
   }
 
   getStatusText(active: boolean): string {

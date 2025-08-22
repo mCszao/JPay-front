@@ -3,11 +3,11 @@ import { AccountPayableStatus } from "../types/AccountPayableStatus";
 export interface AccountPayable {
   id: number;
   title: string;
-  description: string;
+  description?: string;
   category: string;
-  dueDate: string;
+  expirationDate: string;
   amount: number;
   status: AccountPayableStatus;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

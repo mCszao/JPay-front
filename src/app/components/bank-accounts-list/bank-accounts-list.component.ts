@@ -1,14 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-export interface BankAccountRow {
-  id: number;
-  bankName: string;
-  accountNumber: string;
-  accountType: string;
-  balance: number;
-  active: boolean;
-}
+import { BankAccount } from '../../interfaces/BankAccount';
 
 @Component({
   selector: 'app-bank-accounts-list',
@@ -18,8 +10,8 @@ export interface BankAccountRow {
   styleUrls: ['../list.shared.scss'],
 })
 export class BankAccountsListComponent {
-  @Input() items: BankAccountRow[] = [];
-  @Output() edit = new EventEmitter<BankAccountRow>();
-  @Output() toggle = new EventEmitter<BankAccountRow>();
-  @Output() remove = new EventEmitter<BankAccountRow>();
+  @Input() items: BankAccount[] = [];
+  @Output() edit = new EventEmitter<BankAccount>();
+  @Output() toggle = new EventEmitter<BankAccount>();
+  @Output() remove = new EventEmitter<BankAccount>();
 }

@@ -9,6 +9,7 @@ import { SummaryCardComponent } from '../../components/summary-card/summary-card
 import { SummaryCardsContainerComponent } from '../../components/summary-cards-container/summary-cards-container.component';
 import { PageHeaderComponent } from "../../components/page-header/page-header.component";
 import { MainContainerComponent } from '../../components/main-container/main-container.component';
+import { AccountPayable } from '../../interfaces/AccountPayable';
 export interface SummaryData {
   totalBalance: number;
   totalAccounts: number;
@@ -21,16 +22,6 @@ export interface ChartData {
   value: number;
   color: string;
 }
-
-export interface Account {
-  id: number;
-  description: string;
-  amount: number;
-  dueDate: string;
-  status: 'PAID' | 'PENDING' | 'OVERDUE';
-  category: string;
-}
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -56,46 +47,38 @@ export class DashboardComponent {
     { name: 'Outros', value: 1500, color: '#DDA0DD' }
   ];
 
-  recentAccounts: Account[] = [
+  recentAccounts: AccountPayable[] = [
     {
       id: 1,
-      description: 'Conta de Luz - Janeiro',
+      title: 'Conta de Luz - Janeiro',
       amount: 285.50,
-      dueDate: '2024-01-15',
-      status: 'PENDING',
+      expirationDate: '2024-01-15',
+      status: 'PENDENTE',
       category: 'Moradia'
     },
     {
       id: 2,
-      description: 'Supermercado XYZ',
+      title: 'Supermercado XYZ',
       amount: 450.30,
-      dueDate: '2024-01-12',
-      status: 'OVERDUE',
+      expirationDate: '2024-01-12',
+      status: 'VENCIDO',
       category: 'Alimentação'
     },
     {
       id: 3,
-      description: 'Plano de Saúde',
+      title: 'Plano de Saúde',
       amount: 680.00,
-      dueDate: '2024-01-20',
-      status: 'PENDING',
+      expirationDate: '2024-01-20',
+      status: 'PENDENTE',
       category: 'Saúde'
     },
     {
       id: 4,
-      description: 'Combustível',
+      title: 'Combustível',
       amount: 320.75,
-      dueDate: '2024-01-18',
-      status: 'PENDING',
+      expirationDate: '2024-01-18',
+      status: 'PENDENTE',
       category: 'Transporte'
-    },
-    {
-      id: 5,
-      description: 'Internet Fibra',
-      amount: 89.90,
-      dueDate: '2024-01-10',
-      status: 'PAID',
-      category: 'Moradia'
     }
   ];
 
@@ -127,7 +110,7 @@ export class DashboardComponent {
   getStatusColor(status: string): string {
     switch (status) {
       case 'PAID': return '#2cad31ff';
-      case 'PENDING': return '#ff9900c7';
+      case 'PENDENTE': return '#ff9900c7';
       case 'OVERDUE': return '#F44336';
       default: return 'none';
     }
@@ -136,7 +119,7 @@ export class DashboardComponent {
   getStatusText(status: string): string {
     switch (status) {
       case 'PAID': return 'Pago';
-      case 'PENDING': return 'Pendente';
+      case 'PENDENTE': return 'Pendente';
       case 'OVERDUE': return 'Vencido';
       default: return status;
     }
