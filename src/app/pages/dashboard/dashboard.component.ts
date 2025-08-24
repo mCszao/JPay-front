@@ -16,6 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AccountPayableService } from '../../services/account-payable/account-payable.service';
 import { AccountPayableResponse } from '../../interfaces/AccountPayableResponse';
 import { DateService } from '../../services/date/date.service';
+import { BankAccountService } from '../../services/bank-account/bank-account.service';
 export interface SummaryData {
   totalBalance: number;
   totalAccounts: number;
@@ -33,12 +34,15 @@ export interface SummaryData {
 export class DashboardComponent {
 
   currentPage = 0;
-  summaryData: SummaryData = {
-    totalBalance: 45250.75,
-    totalAccounts: 24,
-    overdueAccounts: 3,
-    paidThisMonth: 12850.30
-  };
+  totalAmountOut: number = 0;
+  totalAmountEntry: number = 0;
+  currentTotalBalance: number = 0;
+  // summaryData: SummaryData = {
+  //   totalBalance: 0,
+  //   totalAccounts: 24,
+  //   overdueAccounts: 3,
+  //   paidThisMonth: 12850.30
+  // };
 
   categories: CategoryTotals[] = []
 
@@ -48,17 +52,52 @@ export class DashboardComponent {
     private categoryService: CategoryService,
     private snackBar: MatSnackBar,
     private accountPayableService: AccountPayableService,
+    private bankAccountService: BankAccountService,
     private dateService: DateService
   ) {
     this.loadDashboardData();
   }
 
+  private loadSummaryCards() {
+    this.accountPayableService.getTotalAmountByType('PASSIVO').
+    subscribe(
+      {
+      next: (data) => {
+        this.totalAmountOut = data;
+      },
+      error: (error: any) => {
+        this.showSnackBar(error, "error");
+      }
+    });
+
+    this.accountPayableService.getTotalAmountByType('ATIVO').
+    subscribe(
+      {
+      next: (data) => {
+        this.totalAmountEntry = data;
+      },
+      error: (error: any) => {
+        this.showSnackBar(error, "error");
+      }
+    });
+
+    this.bankAccountService.getCurrentTotalBalance().
+     subscribe(
+      {
+      next: (data) => {
+        this.currentTotalBalance = data;
+      },
+      error: (error: any) => {
+        this.showSnackBar(error, "error");
+      }
+    });
+  }
+
   private loadDashboardData(): void {
-    // TODO: Implementar chamadas para os serviços
-    // this.bankAccountService.getTotalBalance().subscribe(...)
+    this.loadSummaryCards()
     const startDate = new Date();
     const endDate = new Date();
-    const newEndDate = endDate.setDate(endDate.getDate() + 30);
+    endDate.setDate(endDate.getDate() + 30);
 
 
     const formattedStartDate = this.dateService.formatDateByDateObject(startDate);

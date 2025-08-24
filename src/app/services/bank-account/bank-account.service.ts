@@ -33,6 +33,11 @@ export class BankAccountService {
       .get<BankAccountResponse[]>(`${this.URL}/active`);
   }
 
+  getCurrentTotalBalance(): Observable<number> {
+      return this.http
+      .get<number>(`${this.URL}/total-balance`);
+  }
+
   add(bankAccount: BankAccountFormData): Observable<BankAccountResponse> {
     const resp = this.http.post<BankAccountResponse>(this.URL, bankAccount);
 

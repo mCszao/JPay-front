@@ -29,25 +29,7 @@ export class AccountPayableService {
     );
   }
 
-  add(account: AccountPayableDTO): Observable<AccountPayableResponse> {
-    const resp = this.http.post<AccountPayableResponse>(this.URL, account);
-
-    return resp;
-  }
-
-  update(id: number, account: AccountPayableFormData): Observable<AccountPayableResponse>  {
-    const resp = this.http.put<AccountPayableResponse>(this.URL+`/${id}`, account);
-
-    return resp;
-  }
-
-  paid(id: number): Observable<AccountPayableResponse> {
-     const resp = this.http.post<AccountPayableResponse>(this.URL+`/${id}/pay`, {});
-
-    return resp;
-  }
-
-  getByExpirationDateBetween(startDate: string, endDate: string, page: number) {
+    getByExpirationDateBetween(startDate: string, endDate: string, page: number) {
   return this.http
     .get<SpringPageable<AccountPayableResponse>>(`${this.URL}/due-date-range?startDate=${startDate}&endDate=${endDate}&page=${page}&size=100`)
     .pipe(
@@ -70,4 +52,28 @@ export class AccountPayableService {
       }))
     );
   }
+
+  getTotalAmountByType(type: string) {
+    return this.http.get<number>(`${this.URL}/total-amount?type=${type}`);
+  }
+
+  add(account: AccountPayableDTO): Observable<AccountPayableResponse> {
+    const resp = this.http.post<AccountPayableResponse>(this.URL, account);
+
+    return resp;
+  }
+
+  update(id: number, account: AccountPayableFormData): Observable<AccountPayableResponse>  {
+    const resp = this.http.put<AccountPayableResponse>(this.URL+`/${id}`, account);
+
+    return resp;
+  }
+
+  paid(id: number): Observable<AccountPayableResponse> {
+     const resp = this.http.post<AccountPayableResponse>(this.URL+`/${id}/pay`, {});
+
+    return resp;
+  }
+
+
 }
