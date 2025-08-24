@@ -153,7 +153,7 @@ export class BankAccountComponent {
   }
 
   formatDate(dateString: string): string {
-    return this.dateService.formatDate(dateString);
+    return this.dateService.formatDateByString(dateString);
   }
   getStatusText(active: boolean): string {
     return active ? 'Ativa' : 'Inativa';

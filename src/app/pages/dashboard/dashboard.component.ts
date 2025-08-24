@@ -13,6 +13,9 @@ import { AccountPayable } from '../../interfaces/AccountPayable';
 import { CategoryTotals } from '../../interfaces/CategoryTotals';
 import { CategoryService } from '../../services/category/category.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AccountPayableService } from '../../services/account-payable/account-payable.service';
+import { AccountPayableResponse } from '../../interfaces/AccountPayableResponse';
+import { DateService } from '../../services/date/date.service';
 export interface SummaryData {
   totalBalance: number;
   totalAccounts: number;
@@ -29,6 +32,7 @@ export interface SummaryData {
 })
 export class DashboardComponent {
 
+  currentPage = 0;
   summaryData: SummaryData = {
     totalBalance: 45250.75,
     totalAccounts: 24,
@@ -38,52 +42,13 @@ export class DashboardComponent {
 
   categories: CategoryTotals[] = []
 
-  recentAccounts: AccountPayable[] = [
-    {
-      id: 1,
-      type: "PASSIVO",
-      bankAccount: "MOOPA",
-      description: 'Conta de Luz - Janeiro',
-      amount: 285.50,
-      expirationDate: '2024-01-15',
-      status: 'PENDING',
-      category: 'Moradia'
-    },
-    {
-      id: 2,
-      type: "PASSIVO",
-      bankAccount: "MOOPA",
-      description: 'Supermercado XYZ',
-      amount: 450.30,
-      expirationDate: '2024-01-12',
-      status: 'EXPIRED',
-      category: 'Alimentação'
-    },
-    {
-      id: 3,
-      type: "PASSIVO",
-      bankAccount: "MOOPA",
-      description: 'Plano de Saúde',
-      amount: 680.00,
-      expirationDate: '2024-01-20',
-      status: 'PENDING',
-      category: 'Saúde'
-    },
-    {
-      id: 4,
-      bankAccount: "MOOPA",
-      type: "PASSIVO",
-      description: 'Combustível',
-      amount: 320.75,
-      expirationDate: '2024-01-18',
-      status: 'PENDING',
-      category: 'Transporte'
-    }
-  ];
+  recentAccounts: AccountPayableResponse[] = [];
 
   constructor(
     private categoryService: CategoryService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private accountPayableService: AccountPayableService,
+    private dateService: DateService
   ) {
     this.loadDashboardData();
   }
@@ -91,7 +56,22 @@ export class DashboardComponent {
   private loadDashboardData(): void {
     // TODO: Implementar chamadas para os serviços
     // this.bankAccountService.getTotalBalance().subscribe(...)
-    // this.accountService.getAccountsSummary().subscribe(...)
+    const startDate = new Date();
+    const endDate = new Date();
+    const newEndDate = endDate.setDate(endDate.getDate() + 30);
+
+
+    const formattedStartDate = this.dateService.formatDateByDateObject(startDate);
+    const formattedEndDate = this.dateService.formatDateByDateObject(endDate);
+    this.accountPayableService.getByExpirationDateBetweenAndType(formattedStartDate, formattedEndDate, 'PASSIVO',this.currentPage).subscribe(
+      {
+      next: (data) => {
+        this.recentAccounts = data.content;
+      },
+      error: (error: any) => {
+        this.showSnackBar(error, "error");
+      }
+    });
     this.categoryService.expensesByCategory().subscribe({
       next: (data) => {
         this.categories = data;
@@ -99,7 +79,7 @@ export class DashboardComponent {
       error: (error: any) => {
         this.showSnackBar(error, "error");
       }
-    })
+    });
   }
 
   formatCurrency(value: number): string {
@@ -110,7 +90,7 @@ export class DashboardComponent {
   }
 
   formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+    return this.dateService.formatDateByString(dateString);
   }
 
   getStatusColor(status: string): string {

@@ -26,13 +26,19 @@ export class BankAccountService {
         totalPages: res.totalPages
       }))
     );
-}
+  }
+
+  getAllActive(): Observable<BankAccountResponse[]> {
+      return this.http
+      .get<BankAccountResponse[]>(`${this.URL}/active`);
+  }
 
   add(bankAccount: BankAccountFormData): Observable<BankAccountResponse> {
     const resp = this.http.post<BankAccountResponse>(this.URL, bankAccount);
 
     return resp;
   }
+
 
   update(id: number, bankAccount: BankAccountFormData): Observable<BankAccountResponse>  {
     const resp = this.http.put<BankAccountResponse>(this.URL+`/${id}`, bankAccount);
@@ -46,8 +52,4 @@ export class BankAccountService {
     return resp;
   }
 
-  getAllActive(): Observable<BankAccountResponse[]> {
-      return this.http
-      .get<BankAccountResponse[]>(`${this.URL}/active`);
-  }
 }

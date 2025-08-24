@@ -5,7 +5,11 @@ import { Injectable } from '@angular/core';
 })
 export class DateService {
 
-  formatDate(dateString: string): string {
+  formatDateByString(dateString: string): string {
     return new Date(dateString).toLocaleDateString('pt-BR');
+  }
+
+  formatDateByDateObject(date: Date): string {
+    return date.toLocaleDateString('pt-BR');
   }
 }

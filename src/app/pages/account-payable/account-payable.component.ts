@@ -179,7 +179,7 @@ export class AccountPayableComponent {
   // }
 
   formatDate(dateString: string): string {
-    return this.dateService.formatDate(dateString);
+    return this.dateService.formatDateByString(dateString);
   }
 
   getStatusChip(status: AccountPayableStatus): { text: string; class: string } {

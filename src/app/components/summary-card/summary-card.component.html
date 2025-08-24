@@ -6,7 +6,14 @@
         </div>
         <div class="card-info">
           <p class="card-label">{{labelText}}</p>
-          <p class="card-value">{{ (name == null || name == "") ? quantity > 0 ? quantity : formatCurrency(amount) : name }}</p>
+          @if(name != undefined && name != "") {
+            <p class="card-value">{{name}}</p>
+          }
+          @else if(quantity != undefined && quantity != "") {
+            <p class="card-value">{{quantity}}</p>
+          } @else if(amount != undefined && amount != null && amount > 0) {
+            <p class="card-value">{{ formatCurrency(amount) }}</p>
+          }
         </div>
       </div>
     </mat-card-content>

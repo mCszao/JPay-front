@@ -46,14 +46,17 @@ export class CategoriesComponent {
     this.isLoading = true;
     this.categoryService.getAll(this.currentPage).subscribe({
       next: (categories) => {
-        this.filteredCategories = categories.content
-        this.buildStats();
+        this.filteredCategories = categories.content;
       },
       error: (error: any) => {
         this.showSnackBar(error.message, 'error');
+      },
+      complete: () => {
+        this.buildStats();
       }
     })
 
+    this.buildStats();
     // TODO:liberar logica de ativos e inativos quando criar o checkbox
     // setTimeout(() => {
     //   this.filteredCategories = this.filteredCategories.filter(category =>
@@ -109,12 +112,12 @@ export class CategoriesComponent {
         next: () => {
           this.showSnackBar(`Categoria ${action}da com sucesso!`, 'success');
           category.active = !category.active;
+          this.buildStats();
         },
         error: (error: any) => {
           this.showSnackBar(error.message, 'error');
         }
       })
-      this.buildStats();
   }
 
   onDeleteCategory(event: any): void {
@@ -157,7 +160,7 @@ export class CategoriesComponent {
   }
 
   formatDate(dateString: string): string {
-    return this.dateService.formatDate(dateString);
+    return this.dateService.formatDateByString(dateString);
   }
 
   getStatusText(active: boolean): string {

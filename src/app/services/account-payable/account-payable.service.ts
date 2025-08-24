@@ -27,7 +27,7 @@ export class AccountPayableService {
         totalPages: res.totalPages
       }))
     );
-}
+  }
 
   add(account: AccountPayableDTO): Observable<AccountPayableResponse> {
     const resp = this.http.post<AccountPayableResponse>(this.URL, account);
@@ -45,5 +45,29 @@ export class AccountPayableService {
      const resp = this.http.post<AccountPayableResponse>(this.URL+`/${id}/pay`, {});
 
     return resp;
+  }
+
+  getByExpirationDateBetween(startDate: string, endDate: string, page: number) {
+  return this.http
+    .get<SpringPageable<AccountPayableResponse>>(`${this.URL}/due-date-range?startDate=${startDate}&endDate=${endDate}&page=${page}&size=100`)
+    .pipe(
+      map((res: SpringPageable<AccountPayableResponse>): PageResponse<AccountPayableResponse> => ({
+        content: res.content,
+        totalElements: res.totalElements,
+        totalPages: res.totalPages
+      }))
+    );
+  }
+
+  getByExpirationDateBetweenAndType(startDate: string, endDate: string, type: string, page: number) {
+  return this.http
+    .get<SpringPageable<AccountPayableResponse>>(`${this.URL}/due-date-range?startDate=${startDate}&endDate=${endDate}&page=${page}&type=${type.toLocaleUpperCase()}&size=100`)
+    .pipe(
+      map((res: SpringPageable<AccountPayableResponse>): PageResponse<AccountPayableResponse> => ({
+        content: res.content,
+        totalElements: res.totalElements,
+        totalPages: res.totalPages
+      }))
+    );
   }
 }
