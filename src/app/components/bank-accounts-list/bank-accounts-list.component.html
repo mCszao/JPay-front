@@ -21,10 +21,15 @@
               {{ a.active ? 'Ativa' : 'Inativa' }}
             </span>
           </span>
+          <span></span>
           <div class="row-actions">
-            <button class="btn ghost" (click)="edit.emit(a)">Editar</button>
             <button class="btn ghost" (click)="toggle.emit(a)">{{ a.active ? 'Desativar' : 'Ativar' }}</button>
-            <button class="btn danger" (click)="remove.emit(a)">Excluir</button>
+            <button class="btn ghost" (click)="edit.emit(a)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button class="btn danger" (click)="remove.emit(a)">
+              <mat-icon>delete_forever</mat-icon>
+            </button>
           </div>
         </div>
       }

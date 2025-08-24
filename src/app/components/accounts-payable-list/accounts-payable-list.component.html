@@ -4,8 +4,8 @@
     <span>Categoria</span>
     <span>Vencimento</span>
     <span>Valor</span>
-    <span>Tipo</span>
     <span>Status</span>
+    <span>Tipo</span>
     <span class="actions-col">Ações</span>
   </div>
 
@@ -27,13 +27,30 @@
           </span>
           <span class="cell-strong">{{ap.type}}</span>
           <div class="row-actions">
-            @if(ap.status === "PENDING") {
-              <button class="btn ghost" (click)="edit.emit(ap)">Editar</button>
+            <button class="btn"
+             [attr.aria-label]="ap.status === 'PAID' ? 'Marcar como pendente' : 'Marcar como pago'"
+             [class.btn-danger]="ap.status === 'PAID'"
+             [class.btn-ok]="ap.status === 'PENDING'"
+             (click)="toggleStatus.emit(ap)">
+            @if (ap.status === "PAID") {
+                <mat-icon>arrow_back</mat-icon>
+                <mat-icon>payment</mat-icon>
+            } @else {
+              <mat-icon>payment</mat-icon>
             }
-            <button class="btn ghost" (click)="toggleStatus.emit(ap)">
-              {{ ap.status === 'PAID' ? 'Marcar pendente' : 'Marcar pago' }}
             </button>
-            <button class="btn danger" (click)="remove.emit(ap)">Excluir</button>
+            @if(ap.status === "PENDING") {
+              <button class="btn ghost" (click)="edit.emit(ap)">
+                <mat-icon>
+                  edit
+                </mat-icon>
+              </button>
+            }
+            <button class="btn danger" (click)="remove.emit(ap)">
+              <mat-icon>
+                delete_forever
+              </mat-icon>
+            </button>
           </div>
         </div>
       }

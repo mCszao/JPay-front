@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Category } from '../../interfaces/Category';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-categories-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIcon],
   templateUrl:'./categories-list.component.html',
   styleUrls: ['../list.shared.scss'],
 })
