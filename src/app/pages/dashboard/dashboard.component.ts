@@ -35,7 +35,7 @@ export class DashboardComponent {
 
   currentPage = 0;
   totalAmountOut: number = 0;
-  totalAmountEntry: number = 0;
+  totalAmountIn: number = 0;
   currentTotalBalance: number = 0;
   // summaryData: SummaryData = {
   //   totalBalance: 0,
@@ -74,7 +74,7 @@ export class DashboardComponent {
     subscribe(
       {
       next: (data) => {
-        this.totalAmountEntry = data;
+        this.totalAmountIn = data;
       },
       error: (error: any) => {
         this.showSnackBar(error, "error");
