@@ -40,6 +40,7 @@ export class BankAccountComponent {
     this.loadBankAccounts();
   }
 
+  
   private loadBankAccounts(): void {
     this.isLoading = true;
 

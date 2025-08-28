@@ -30,7 +30,7 @@ export class CategoriesComponent {
   currentPage: number = 0;
   totalActiveCategories = signal(0);
   totalCategories = signal(0);
-  mostUsedCategorie = signal("")
+  mostUsedCategorie = signal("Sem lançamentos cadastrados")
 
 
   constructor(
@@ -55,8 +55,6 @@ export class CategoriesComponent {
         this.buildStats();
       }
     })
-
-    this.buildStats();
     // TODO:liberar logica de ativos e inativos quando criar o checkbox
     // setTimeout(() => {
     //   this.filteredCategories = this.filteredCategories.filter(category =>
