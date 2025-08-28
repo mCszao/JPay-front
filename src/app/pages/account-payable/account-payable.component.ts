@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MainContainerComponent } from "../../components/main-container/main-container.component";
 import { PageHeaderComponent } from "../../components/page-header/page-header.component";
 import { SummaryCardsContainerComponent } from "../../components/summary-cards-container/summary-cards-container.component";
@@ -14,60 +14,95 @@ import { DialogService } from '../../services/dialog.service';
 import { AccountPayableService } from '../../services/account-payable/account-payable.service';
 import { AccountPayableResponse } from '../../interfaces/AccountPayableResponse';
 import { AccountPayableDTO } from '../../interfaces/AccountPayableDTO';
+import { BankAccountService } from '../../services/bank-account/bank-account.service';
+import { forkJoin } from 'rxjs';
 
 
 @Component({
-  selector: 'app-account-payable.component',
+  selector: 'app-account-payable',
   standalone: true,
   imports: [MainContainerComponent, PageHeaderComponent, SummaryCardsContainerComponent, SummaryCardComponent, AccountsPayableListComponent, SearchBarComponent],
-templateUrl: './account-payable.component.html',
-  styleUrl: './account-payable.component.scss'
+  templateUrl: './account-payable.component.html',
+  styleUrls: ['./account-payable.component.scss']
 })
-export class AccountPayableComponent {
-
+export class AccountPayableComponent implements OnInit {
+  allAccounts: AccountPayableResponse[] = [];
   filteredAccounts: AccountPayableResponse[] = [];
-  currentPage: number = 0;
-  // selectedStatus: '' | AccountPayableStatus = '';
-  // selectedCategory: string = '';
-  isLoading: boolean = false;
-
-  totalAccounts: number = 0;
-  totalDueThisMonth: number = 0;
+  currentPage = 0;
+  isLoading = false;
+  totalPaid = 0;
+  totalPending = 0;
+  totalReceive = 0;
+  totalAmountOut = 0;
+  totalAmountIn = 0;
+  balance = 0;
 
   constructor(
     private snackBar: MatSnackBar,
     private dateService: DateService,
     private dialogService: DialogService,
     private accountPayableService: AccountPayableService,
-  ) {
-    this.loadAccounts();
+    private bankAccountService: BankAccountService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadAllData();
   }
 
-  private loadAccounts(): void {
+  private loadAllData() {
     this.isLoading = true;
+    const accounts$ = this.accountPayableService.getAll(this.currentPage);
+    const out$ = this.accountPayableService.getTotalAmountByType('PASSIVO');
+    const in$ = this.accountPayableService.getTotalAmountByType('ATIVO');
+    // const balance$ = this.bankAccountService.getCurrentTotalBalance();
 
-    this.accountPayableService.getAll(this.currentPage).subscribe({
-      next: (data) => {
-        this.filteredAccounts = data.content;
+    forkJoin({
+      accounts: accounts$,
+      totalOut: out$,
+      totalIn: in$,
+    }).subscribe({
+      next: ({ accounts, totalOut, totalIn}) => {
+        this.allAccounts = accounts.content ?? [];
+        this.filteredAccounts = [...this.allAccounts];
+        this.totalAmountOut = totalOut ?? 0;
+        this.totalAmountIn = totalIn ?? 0;
+        this.buildStats();
       },
-      error: (error: any) => {
-        this.showSnackBar(error, "error");
+      error: (err) => {
+        this.showSnackBar(err?.message ?? JSON.stringify(err), 'error');
+      },
+      complete: () => this.isLoading = false
+    });
+  }
+
+  private buildStats() {
+    // reset antes de calcular
+    this.totalPaid = 0;
+    this.balance = 0;
+    this.totalPending = 0;
+    this.totalReceive = 0;
+    this.totalAmountIn = 0;
+    this.totalAmountOut = 0;
+
+
+    for (const ac of this.filteredAccounts) {
+      if (ac.status === 'PAID') {
+        if (ac.type === 'ATIVO') {
+          this.totalReceive += ac.amount;
+          this.totalAmountIn += ac.amount;
+        }
+        else {
+          this.totalPaid += ac.amount;
+          this.totalAmountOut += ac.amount;
+        }
+      } else {
+        this.totalPending += (ac.type === 'ATIVO' ? ac.amount : -(ac.amount));
       }
-    })
+    }
 
-    // setTimeout(() => {
-    //   // aplica filtros básicos
-    //   this.filteredAccounts = this.filteredAccounts
-    //     .filter(a => (this.selectedStatus ? a.status === this.selectedStatus : true))
-    //     .filter(a => (this.selectedCategory ? a.category === this.selectedCategory : true));
 
-    //   this.totalAccounts = this.filteredAccounts.length;
-    //   this.totalDueThisMonth = this.filteredAccounts
-    //     .filter(a => a.status !== 'PAGO')
-    //     .reduce((acc, cur) => acc + cur.amount, 0);
-
-    //   this.isLoading = false;
-    // }, 300);
+    this.balance = this.totalAmountIn - this.totalAmountOut;
+    console.log(this.balance);
   }
 
   onSearch(textInput: string): void {
@@ -76,7 +111,7 @@ export class AccountPayableComponent {
           a.description.toLowerCase().includes(textInput.toLowerCase())
         );
       } else {
-        this.loadAccounts();
+        this.filteredAccounts = this.allAccounts;
       }
   }
 
@@ -102,7 +137,7 @@ export class AccountPayableComponent {
           expirationDate: account.expirationDate,
           status: account.status == "PAID" ? "PAGO" : "PENDENTE",
           bankAccount: account.bankAccount.name,
-          tyoe: account.type == "PASSIVO" ? "PASSIVO" : "ATIVO"
+          type: account.type == "PASSIVO" ? "PASSIVO" : "ATIVO"
         },
       }
     );
@@ -124,6 +159,9 @@ export class AccountPayableComponent {
       },
       error: (error: any) => {
         this.showSnackBar(error, "error")
+      },
+      complete: () => {
+        this.buildStats();
       }
     })
 
@@ -144,6 +182,9 @@ export class AccountPayableComponent {
         this.showSnackBar('Conta criada com sucesso!', 'success');
       }, error: (error: any) => {
         this.showSnackBar(error, error);
+      },
+      complete: () => {
+        this.buildStats();
       }
     })
 
@@ -160,6 +201,9 @@ export class AccountPayableComponent {
       },
       error: (error: any) => {
         this.showSnackBar(error, "error");
+      },
+      complete: () => {
+        this.buildStats();
       }
     })
 

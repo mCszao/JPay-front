@@ -22,7 +22,7 @@
               [class.chip-green]="ap.status === 'PAID'"
               [class.chip-yellow]="ap.status === 'PENDING'"
               >
-              {{ ap.status === "PAID" ? "PAGO" : "PENDENTE" }}
+              {{ ap.status === "PAID" ? (ap.type === "ATIVO" ? "RECEBIDO" : "PAGO") : "PENDENTE" }}
             </span>
           </span>
           <span class="cell-strong">{{ap.type}}</span>

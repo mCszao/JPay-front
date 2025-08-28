@@ -2,10 +2,10 @@
   <app-page-header page-name="Contas a Pagar" page-description="Gerencie suas contas a pagar"></app-page-header>
 
   <app-summary-cards-container>
-    <app-summary-card label-text="Total Receitas" material-icon-name="warning" [amount]="1000.67"></app-summary-card>
-    <app-summary-card label-text="Total Receitas" material-icon-name="warning" [amount]="1000.67"></app-summary-card>
-    <app-summary-card label-text="Total Receitas" material-icon-name="warning" [amount]="1000.67"></app-summary-card>
-    <app-summary-card label-text="Total Receitas" material-icon-name="warning" [amount]="1000.67"></app-summary-card>
+    <app-summary-card label-text="Total recebido" material-icon-name="attach_money" [amount]="totalReceive" color="green"></app-summary-card>
+    <app-summary-card label-text="Total pago" material-icon-name="money_off" [amount]="totalPaid" color="orange"></app-summary-card>
+    <app-summary-card label-text="Total pendente" material-icon-name="warning" [amount]="totalPending" color="yellow"></app-summary-card>
+    <app-summary-card label-text="Balanço atual" material-icon-name="warning" [amount]="balance" [color]="balance >= 0 ? 'green' : 'red'"></app-summary-card>
 
   </app-summary-cards-container>
 
