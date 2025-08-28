@@ -11,7 +11,7 @@
           }
           @else if(quantity != undefined && quantity != "") {
             <p class="card-value">{{quantity}}</p>
-          } @else if(amount != undefined && amount != null && amount > 0) {
+          } @else if(amount != undefined && (amount >= 0 || amount <= 0)) {
             <p class="card-value">{{ formatCurrency(amount) }}</p>
           }
         </div>
