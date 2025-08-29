@@ -1,0 +1,9 @@
+::ng-deep .mat-mdc-icon-button .mat-icon.icon-active {
+  color: #4caf50; // verde sucesso
+  font-size: 28px; // maiorzinho
+}
+
+::ng-deep .mat-mdc-icon-button .mat-icon.icon-inactive {
+  color: #9e9e9e;  // cinza neutro
+  font-size: 28px;
+}

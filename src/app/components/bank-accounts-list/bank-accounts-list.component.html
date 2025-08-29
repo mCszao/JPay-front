@@ -23,7 +23,11 @@
           </span>
           <span></span>
           <div class="row-actions">
-            <button class="btn ghost" (click)="toggle.emit(a)">{{ a.active ? 'Desativar' : 'Ativar' }}</button>
+            <button class="btn ghost" (click)="toggle.emit(a)">
+              <mat-icon>
+                {{ a.active ? 'toggle_on' : 'toggle_off' }}
+              </mat-icon>
+             </button>
             <button class="btn ghost" (click)="edit.emit(a)">
               <mat-icon>edit</mat-icon>
             </button>
