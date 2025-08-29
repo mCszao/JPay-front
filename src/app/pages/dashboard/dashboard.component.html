@@ -48,6 +48,9 @@
       </mat-card-header>
       <mat-card-content>
         <div class="accounts-list">
+          @if(recentAccounts.length === 0) {
+            <p>Sem vencimentos</p>
+          }
           <div class="account-item" *ngFor="let account of recentAccounts">
             <div class="account-info">
               <h4>{{ account.description }}</h4>

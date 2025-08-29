@@ -10,10 +10,10 @@ import { Category } from '../../interfaces/Category';
 import { CategoryFormData } from '../../interfaces/CategoryFormData';
 import { CategoriesListComponent } from "../../components/categories-list/categories-list.component";
 import { CategoryDialogComponent, CategoryDialogData } from '../../components/category-dialog/category-dialog.component';
-import { DialogService } from '../../services/dialog.service';
+import { DialogService } from '../../core/services/dialog/dialog.service';
 import { CategoryService } from '../../services/category/category.service';
 import { CategoryResponse } from '../../interfaces/CategoryResponse';
-import { DateService } from '../../services/date/date.service';
+import { DateService } from '../../core/utils/date/date.util';
 
 @Component({
   selector: 'app-categories',

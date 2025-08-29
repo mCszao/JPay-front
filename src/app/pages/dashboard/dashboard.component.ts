@@ -15,7 +15,7 @@ import { CategoryService } from '../../services/category/category.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AccountPayableService } from '../../services/account-payable/account-payable.service';
 import { AccountPayableResponse } from '../../interfaces/AccountPayableResponse';
-import { DateService } from '../../services/date/date.service';
+import { DateService } from '../../core/utils/date/date.util';
 import { BankAccountService } from '../../services/bank-account/bank-account.service';
 export interface SummaryData {
   totalBalance: number;

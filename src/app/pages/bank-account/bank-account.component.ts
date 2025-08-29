@@ -8,11 +8,11 @@ import { BankAccount } from '../../interfaces/BankAccount';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BankAccountFormData } from '../../interfaces/BankAccountFormData';
 import { BankAccountsListComponent } from "../../components/bank-accounts-list/bank-accounts-list.component";
-import { DateService } from '../../services/date/date.service';
+import { DateService } from '../../core/utils/date/date.util';
 import { BankAccountService } from '../../services/bank-account/bank-account.service';
 import { PageResponse } from '../../interfaces/PageResponse';
 import { BankAccountsDialogComponent } from '../../components/bank-accounts-dialog/bank-accounts-dialog.component';
-import { DialogService } from '../../services/dialog.service';
+import { DialogService } from '../../core/services/dialog/dialog.service';
 import { BankAccountResponse } from '../../interfaces/BankAccountResponse';
 
 
@@ -40,7 +40,7 @@ export class BankAccountComponent {
     this.loadBankAccounts();
   }
 
-  
+
   private loadBankAccounts(): void {
     this.isLoading = true;
 
