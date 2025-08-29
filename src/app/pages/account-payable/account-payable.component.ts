@@ -11,11 +11,11 @@ import { SearchBarComponent } from "../../components/search-bar/search-bar.compo
 import { DateService } from '../../core/utils/date/date.util';
 import { AccountPayableDialogComponent } from '../../components/accounts-payable-dialog/accounts-payable-dialog.component';
 import { DialogService } from '../../core/services/dialog/dialog.service';
-import { AccountPayableService } from '../../services/account-payable/account-payable.service';
 import { AccountPayableResponse } from '../../interfaces/AccountPayableResponse';
 import { AccountPayableDTO } from '../../interfaces/AccountPayableDTO';
-import { BankAccountService } from '../../services/bank-account/bank-account.service';
 import { forkJoin } from 'rxjs';
+import { AccountPayableService } from '../../domain/services/account-payable/account-payable.service';
+import { BankAccountService } from '../../domain/services/bank-account/bank-account.service';
 
 
 @Component({

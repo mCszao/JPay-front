@@ -11,12 +11,13 @@ import { PageHeaderComponent } from "../../components/page-header/page-header.co
 import { MainContainerComponent } from '../../components/main-container/main-container.component';
 import { AccountPayable } from '../../interfaces/AccountPayable';
 import { CategoryTotals } from '../../interfaces/CategoryTotals';
-import { CategoryService } from '../../services/category/category.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { AccountPayableService } from '../../services/account-payable/account-payable.service';
 import { AccountPayableResponse } from '../../interfaces/AccountPayableResponse';
 import { DateService } from '../../core/utils/date/date.util';
-import { BankAccountService } from '../../services/bank-account/bank-account.service';
+import { CategoryService } from '../../domain/services/category/category.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AccountPayableService } from '../../domain/services/account-payable/account-payable.service';
+import { BankAccountService } from '../../domain/services/bank-account/bank-account.service';
+
 export interface SummaryData {
   totalBalance: number;
   totalAccounts: number;

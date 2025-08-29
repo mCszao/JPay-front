@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CategoryResponse } from '../../interfaces/CategoryResponse';
-import { CategoryFormData } from '../../interfaces/CategoryFormData';
-import { Category } from '../../interfaces/Category';
-import { PageResponse } from '../../interfaces/PageResponse';
-import { SpringPageable } from '../../interfaces/SpringPageable';
 import { map } from 'rxjs/operators';
-import { CategoryTotals } from '../../interfaces/CategoryTotals';
+import { SpringPageable } from '../../../interfaces/SpringPageable';
+import { Category } from '../../../interfaces/Category';
+import { PageResponse } from '../../../interfaces/PageResponse';
+import { CategoryResponse } from '../../../interfaces/CategoryResponse';
+import { CategoryFormData } from '../../../interfaces/CategoryFormData';
+import { CategoryTotals } from '../../../interfaces/CategoryTotals';
 
 @Injectable({
   providedIn: 'root'

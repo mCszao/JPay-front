@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AccountPayable } from '../../interfaces/AccountPayable';
-import { SpringPageable } from '../../interfaces/SpringPageable';
-import { PageResponse } from '../../interfaces/PageResponse';
 import { HttpClient } from '@angular/common/http';
-import { AccountPayableFormData } from '../../interfaces/AccountPayableFormData';
-import { AccountPayableResponse } from '../../interfaces/AccountPayableResponse';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AccountPayableDTO } from '../../interfaces/AccountPayableDTO';
+import { SpringPageable } from '../../../interfaces/SpringPageable';
+import { PageResponse } from '../../../interfaces/PageResponse';
+import { AccountPayableResponse } from '../../../interfaces/AccountPayableResponse';
+import { AccountPayableDTO } from '../../../interfaces/AccountPayableDTO';
+import { AccountPayableFormData } from '../../../interfaces/AccountPayableFormData';
 
 @Injectable({
   providedIn: 'root'

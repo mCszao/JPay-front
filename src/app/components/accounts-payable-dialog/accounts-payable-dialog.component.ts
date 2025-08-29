@@ -9,12 +9,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { AccountPayableStatus } from '../../types/AccountPayableStatus';
 import { DialogData } from '../../interfaces/DialogData';
 import { AccountPayable } from '../../interfaces/AccountPayable';
-import { CategoryService } from '../../services/category/category.service';
 import { CategoryResponse } from '../../interfaces/CategoryResponse';
 import { TransactionType } from '../../types/TransactionType';
 import { AccountPayableDTO } from '../../interfaces/AccountPayableDTO';
-import { BankAccountService } from '../../services/bank-account/bank-account.service';
 import { BankAccountResponse } from '../../interfaces/BankAccountResponse';
+import { CategoryService } from '../../domain/services/category/category.service';
+import { BankAccountService } from '../../domain/services/bank-account/bank-account.service';
 
 
 export interface AccountPayableDialogData extends DialogData<AccountPayable>{}
