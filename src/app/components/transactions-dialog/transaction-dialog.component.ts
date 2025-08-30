@@ -6,21 +6,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { AccountPayableStatus } from '../../types/AccountPayableStatus';
-import { DialogData } from '../../interfaces/DialogData';
-import { AccountPayable } from '../../interfaces/AccountPayable';
-import { CategoryResponse } from '../../interfaces/CategoryResponse';
-import { TransactionType } from '../../types/TransactionType';
-import { AccountPayableDTO } from '../../interfaces/AccountPayableDTO';
-import { BankAccountResponse } from '../../interfaces/BankAccountResponse';
-import { CategoryService } from '../../domain/services/category/category.service';
-import { BankAccountService } from '../../domain/services/bank-account/bank-account.service';
+import { Transaction } from '../../domain/transaction/interfaces/Transaction';
+import { DialogData } from '../../core/interfaces/DialogData';
+import { CategoryResponse } from '../../domain/category/interfaces/CategoryResponse';
+import { CategoryService } from '../../domain/category/services/category.service';
+import { BankAccountService } from '../../domain/bank-account/services/bank-account.service';
+import { TransactionDTO } from '../../domain/transaction/interfaces/TransactionDTO';
+import { BankAccountResponse } from '../../domain/bank-account/interfaces/BankAccountResponse';
 
 
-export interface AccountPayableDialogData extends DialogData<AccountPayable>{}
+interface TransactionDialogData extends DialogData<Transaction>{}
 
 @Component({
-  selector: 'app-account-payable-dialog',
+  selector: 'app-transaction-dialog',
   standalone: true,
   imports: [
     CommonModule,
@@ -30,23 +28,23 @@ export interface AccountPayableDialogData extends DialogData<AccountPayable>{}
     MatSelectModule,
     MatButtonModule,
   ],
-  templateUrl: './accounts-payable-dialog.component.html',
+  templateUrl: './transaction-dialog.component.html',
   styleUrls: ['../dialog.shared.scss'],
 })
-export class AccountPayableDialogComponent {
+export class TransactionDialogComponent {
   readonly statusOptions: string[] = ['PENDENTE', 'PAGO'];
 
    readonly transctionsType: string[] = ['ATIVO', 'PASSIVO'];
 
   categories: CategoryResponse[] = [];
   form!: FormGroup;
-  accounts: AccountPayable[] = [];
+  accounts: Transaction[] = [];
   bankAccounts: BankAccountResponse[] = []
 
   constructor(
     private fb: FormBuilder,
-    private ref: MatDialogRef<AccountPayableDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: AccountPayableDialogData,
+    private ref: MatDialogRef<TransactionDialogData>,
+    @Inject(MAT_DIALOG_DATA) public data: TransactionDialogData,
     private categoryService: CategoryService,
     private bankAccountService: BankAccountService
   ) {
@@ -54,7 +52,6 @@ export class AccountPayableDialogComponent {
     description: [this.data.value?.description ?? '', [Validators.maxLength(300)]],
     category: [this.data.value?.category ?? '', [Validators.required]],
     bankAccount: [this.data.value?.bankAccount ?? '', [Validators.required]],
-    // Para input type="date", se vier ISO convertendo para yyyy-MM-dd ajuda no preenchimento
     expirationDate: [this.toInputDate(this.data.value?.expirationDate) ?? '', [Validators.required]],
     amount: [this.data.value?.amount ?? 0, [Validators.required, Validators.min(0.01)]],
     status: [this.data.value?.status ?? 'PENDENTE', [Validators.required]],
@@ -93,7 +90,7 @@ export class AccountPayableDialogComponent {
   save(): void {
     if (this.form.valid) {
       // Retorna { description, categoryId, expirationDate, amount, bankAccountId, type }
-      const dto: AccountPayableDTO = {
+      const dto: TransactionDTO = {
         description: this.form.value.description,
         amount: this.form.value.amount ,
         bankAccountId: this.getBank(),

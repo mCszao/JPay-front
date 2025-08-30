@@ -9,14 +9,13 @@ import { SummaryCardComponent } from '../../components/summary-card/summary-card
 import { SummaryCardsContainerComponent } from '../../components/summary-cards-container/summary-cards-container.component';
 import { PageHeaderComponent } from "../../components/page-header/page-header.component";
 import { MainContainerComponent } from '../../components/main-container/main-container.component';
-import { AccountPayable } from '../../interfaces/AccountPayable';
-import { CategoryTotals } from '../../interfaces/CategoryTotals';
-import { AccountPayableResponse } from '../../interfaces/AccountPayableResponse';
+import { CategoryTotals } from '../../domain/category/interfaces/CategoryTotals';
 import { DateService } from '../../core/utils/date/date.util';
-import { CategoryService } from '../../domain/services/category/category.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AccountPayableService } from '../../domain/services/account-payable/account-payable.service';
-import { BankAccountService } from '../../domain/services/bank-account/bank-account.service';
+import { TransactionResponse } from '../../domain/transaction/interfaces/TransactionResponse';
+import { CategoryService } from '../../domain/category/services/category.service';
+import { TransactionService } from '../../domain/transaction/services/transaction.service';
+import { BankAccountService } from '../../domain/bank-account/services/bank-account.service';
 
 export interface SummaryData {
   totalBalance: number;
@@ -47,12 +46,12 @@ export class DashboardComponent {
 
   categories: CategoryTotals[] = []
 
-  recentAccounts: AccountPayableResponse[] = [];
+  recentAccounts: TransactionResponse[] = [];
 
   constructor(
     private categoryService: CategoryService,
     private snackBar: MatSnackBar,
-    private accountPayableService: AccountPayableService,
+    private transactionService: TransactionService,
     private bankAccountService: BankAccountService,
     private dateService: DateService
   ) {
@@ -60,7 +59,7 @@ export class DashboardComponent {
   }
 
   private loadSummaryCards() {
-    this.accountPayableService.getTotalAmountByType('PASSIVO').
+    this.transactionService.getTotalAmountByType('PASSIVO').
     subscribe(
       {
       next: (data) => {
@@ -71,7 +70,7 @@ export class DashboardComponent {
       }
     });
 
-    this.accountPayableService.getTotalAmountByType('ATIVO').
+    this.transactionService.getTotalAmountByType('ATIVO').
     subscribe(
       {
       next: (data) => {
@@ -103,7 +102,7 @@ export class DashboardComponent {
 
     const formattedStartDate = this.dateService.formatDateByDateObject(startDate);
     const formattedEndDate = this.dateService.formatDateByDateObject(endDate);
-    this.accountPayableService.getByExpirationDateBetweenAndType(formattedStartDate, formattedEndDate, 'PASSIVO',this.currentPage).subscribe(
+    this.transactionService.getByExpirationDateBetweenAndType(formattedStartDate, formattedEndDate, 'PASSIVO',this.currentPage).subscribe(
       {
       next: (data) => {
         this.recentAccounts = data.content;

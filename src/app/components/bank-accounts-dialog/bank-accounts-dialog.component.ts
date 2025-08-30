@@ -6,8 +6,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-import { DialogData } from '../../interfaces/DialogData';
-import { BankAccount } from '../../interfaces/BankAccount';
+import { DialogData } from '../../core/interfaces/DialogData';
+import { BankAccount } from '../../domain/bank-account/interfaces/BankAccount';
+
 
 interface BankAccountDialogData extends DialogData<BankAccount> {}
 

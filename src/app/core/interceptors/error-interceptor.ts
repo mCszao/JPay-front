@@ -1,4 +1,3 @@
-// src/app/core/interceptors/error.interceptor.ts
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -9,7 +8,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
-      // Tenta extrair a mensagem amigável do backend
+      // Tenta extrair a mensagem do backend se não pega o error
       const message =
         err.error?.message ||
         err.error?.error ||

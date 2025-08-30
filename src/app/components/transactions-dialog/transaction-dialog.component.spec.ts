@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccountPayableDialogComponent } from './accounts-payable-dialog.component';
+import { TransactionDialogComponent } from './transaction-dialog.component';
 
 describe('AccountsPayableDialogComponent', () => {
-  let component: AccountPayableDialogComponent;
-  let fixture: ComponentFixture<AccountPayableDialogComponent>;
+  let component: TransactionDialogComponent;
+  let fixture: ComponentFixture<TransactionDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountPayableDialogComponent]
+      imports: [TransactionDialogComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AccountPayableDialogComponent);
+    fixture = TestBed.createComponent(TransactionDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

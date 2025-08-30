@@ -1,4 +1,4 @@
-export interface AccountPayableResponse {
+export interface TransactionResponse {
   id: number;
   description: string;
   amount: number;

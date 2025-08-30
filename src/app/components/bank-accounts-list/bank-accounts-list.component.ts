@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { BankAccount } from '../../interfaces/BankAccount';
 import { MatIcon } from '@angular/material/icon';
+import { BankAccount } from '../../domain/bank-account/interfaces/BankAccount';
 
 @Component({
   selector: 'app-bank-accounts-list',

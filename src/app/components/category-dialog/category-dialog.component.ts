@@ -5,8 +5,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { DialogData } from '../../interfaces/DialogData';
-import { Category } from '../../interfaces/Category';
+import { DialogData } from '../../core/interfaces/DialogData';
+import { Category } from '../../domain/category/interfaces/Category';
 
 export interface CategoryDialogData extends DialogData<Category>{}
 

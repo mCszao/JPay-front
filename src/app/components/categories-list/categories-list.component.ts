@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Category } from '../../interfaces/Category';
+import { Category } from '../../domain/category/interfaces/Category';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({

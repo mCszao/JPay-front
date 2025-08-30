@@ -14,15 +14,15 @@
   filterLabel="Todas as categorias"
   addButtonLabel="+ Nova Conta a Pagar"
   (search)="onSearch($event)"
-  (add)="onNewAccountPayable()"
+  (add)="onNewTransaction()"
   [showFilter]="true"
 ></app-search-bar>
 
-<app-accounts-payable-list
-  [items]="filteredAccounts"
-  (edit)="onEditAccount($event)"
+<app-transactions-list
+  [items]="filteredTransactions"
+  (edit)="onEditTransaction($event)"
   (toggleStatus)="onToggleStatus($event)"
-  (remove)="onDeleteAccount($event)"
-></app-accounts-payable-list>
+  (remove)="onDeleteTransaction($event)"
+></app-transactions-list>
 
 </app-main-container>

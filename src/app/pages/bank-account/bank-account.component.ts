@@ -4,16 +4,17 @@ import { PageHeaderComponent } from "../../components/page-header/page-header.co
 import { SummaryCardsContainerComponent } from "../../components/summary-cards-container/summary-cards-container.component";
 import { SummaryCardComponent } from "../../components/summary-card/summary-card.component";
 import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
-import { BankAccount } from '../../interfaces/BankAccount';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BankAccountFormData } from '../../interfaces/BankAccountFormData';
 import { BankAccountsListComponent } from "../../components/bank-accounts-list/bank-accounts-list.component";
 import { DateService } from '../../core/utils/date/date.util';
-import { PageResponse } from '../../interfaces/PageResponse';
+import { PageResponse } from '../../core/interfaces/PageResponse';
 import { BankAccountsDialogComponent } from '../../components/bank-accounts-dialog/bank-accounts-dialog.component';
 import { DialogService } from '../../core/services/dialog/dialog.service';
-import { BankAccountResponse } from '../../interfaces/BankAccountResponse';
-import { BankAccountService } from '../../domain/services/bank-account/bank-account.service';
+import { BankAccountService } from '../../domain/bank-account/services/bank-account.service';
+import { BankAccount } from '../../domain/bank-account/interfaces/BankAccount';
+import { BankAccountFormData } from '../../domain/bank-account/interfaces/BankAccountFormData';
+import { BankAccountResponse } from '../../domain/bank-account/interfaces/BankAccountResponse';
+
 
 
 @Component({

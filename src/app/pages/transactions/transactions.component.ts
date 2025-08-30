@@ -1,33 +1,33 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MainContainerComponent } from "../../components/main-container/main-container.component";
 import { PageHeaderComponent } from "../../components/page-header/page-header.component";
 import { SummaryCardsContainerComponent } from "../../components/summary-cards-container/summary-cards-container.component";
 import { SummaryCardComponent } from "../../components/summary-card/summary-card.component";
-import { AccountPayableFormData } from '../../interfaces/AccountPayableFormData';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AccountPayableStatus } from '../../types/AccountPayableStatus';
-import { AccountsPayableListComponent } from "../../components/accounts-payable-list/accounts-payable-list.component";
 import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
 import { DateService } from '../../core/utils/date/date.util';
-import { AccountPayableDialogComponent } from '../../components/accounts-payable-dialog/accounts-payable-dialog.component';
 import { DialogService } from '../../core/services/dialog/dialog.service';
-import { AccountPayableResponse } from '../../interfaces/AccountPayableResponse';
-import { AccountPayableDTO } from '../../interfaces/AccountPayableDTO';
 import { forkJoin } from 'rxjs';
-import { AccountPayableService } from '../../domain/services/account-payable/account-payable.service';
-import { BankAccountService } from '../../domain/services/bank-account/bank-account.service';
+import { TransactionListComponent } from '../../components/transactions-list/transactions-list.component';
+import { TransactionResponse } from '../../domain/transaction/interfaces/TransactionResponse';
+import { TransactionService } from '../../domain/transaction/services/transaction.service';
+import { TransactionDialogComponent } from '../../components/transactions-dialog/transaction-dialog.component';
+import { TransactionDTO } from '../../domain/transaction/interfaces/TransactionDTO';
+import { TransactionFormData } from '../../domain/transaction/interfaces/TransactionFormData';
+import { TransactionStatus } from '../../domain/types/TransactionStatus';
+
 
 
 @Component({
-  selector: 'app-account-payable',
+  selector: 'app-transactions',
   standalone: true,
-  imports: [MainContainerComponent, PageHeaderComponent, SummaryCardsContainerComponent, SummaryCardComponent, AccountsPayableListComponent, SearchBarComponent],
-  templateUrl: './account-payable.component.html',
-  styleUrls: ['./account-payable.component.scss']
+  imports: [MainContainerComponent, PageHeaderComponent, SummaryCardsContainerComponent, SummaryCardComponent, TransactionListComponent, SearchBarComponent],
+  templateUrl: './transactions.component.html',
+  styleUrls: ['./transactions.component.scss']
 })
-export class AccountPayableComponent implements OnInit {
-  allAccounts: AccountPayableResponse[] = [];
-  filteredAccounts: AccountPayableResponse[] = [];
+export class TransactionComponent implements OnInit {
+  allTransactions: TransactionResponse[] = [];
+  filteredTransactions: TransactionResponse[] = [];
   currentPage = 0;
   isLoading = false;
   totalPaid = 0;
@@ -41,8 +41,7 @@ export class AccountPayableComponent implements OnInit {
     private snackBar: MatSnackBar,
     private dateService: DateService,
     private dialogService: DialogService,
-    private accountPayableService: AccountPayableService,
-    private bankAccountService: BankAccountService
+    private transactionService: TransactionService
   ) {}
 
   ngOnInit(): void {
@@ -51,10 +50,9 @@ export class AccountPayableComponent implements OnInit {
 
   private loadAllData() {
     this.isLoading = true;
-    const accounts$ = this.accountPayableService.getAll(this.currentPage);
-    const out$ = this.accountPayableService.getTotalAmountByType('PASSIVO');
-    const in$ = this.accountPayableService.getTotalAmountByType('ATIVO');
-    // const balance$ = this.bankAccountService.getCurrentTotalBalance();
+    const accounts$ = this.transactionService.getAll(this.currentPage);
+    const out$ = this.transactionService.getTotalAmountByType('PASSIVO');
+    const in$ = this.transactionService.getTotalAmountByType('ATIVO');
 
     forkJoin({
       accounts: accounts$,
@@ -62,8 +60,8 @@ export class AccountPayableComponent implements OnInit {
       totalIn: in$,
     }).subscribe({
       next: ({ accounts, totalOut, totalIn}) => {
-        this.allAccounts = accounts.content ?? [];
-        this.filteredAccounts = [...this.allAccounts];
+        this.allTransactions = accounts.content ?? [];
+        this.filteredTransactions = [...this.allTransactions];
         this.totalAmountOut = totalOut ?? 0;
         this.totalAmountIn = totalIn ?? 0;
         this.buildStats();
@@ -85,7 +83,7 @@ export class AccountPayableComponent implements OnInit {
     this.totalAmountOut = 0;
 
 
-    for (const ac of this.filteredAccounts) {
+    for (const ac of this.filteredTransactions) {
       if (ac.status === 'PAID') {
         if (ac.type === 'ATIVO') {
           this.totalReceive += ac.amount;
@@ -107,55 +105,55 @@ export class AccountPayableComponent implements OnInit {
 
   onSearch(textInput: string): void {
      if (textInput.trim()) {
-        this.filteredAccounts = this.filteredAccounts.filter(a =>
+        this.filteredTransactions = this.filteredTransactions.filter(a =>
           a.description.toLowerCase().includes(textInput.toLowerCase())
         );
       } else {
-        this.filteredAccounts = this.allAccounts;
+        this.filteredTransactions = this.allTransactions;
       }
   }
 
-  onNewAccountPayable(): void {
-    // TODO: abrir modal de criação
-    const ref = this.dialogService.open(AccountPayableDialogComponent, { mode: 'create' });
+  onNewTransaction(): void {
+
+    const ref = this.dialogService.open(TransactionDialogComponent, { mode: 'create' });
 
     ref.afterClosed().subscribe(formData => {
       if (!formData) return;
-      this.createAccount(formData);
+      this.createTransaction(formData);
     });
   }
 
-  onEditAccount(account: AccountPayableResponse): void {
+  onEditTransaction(transaction: TransactionResponse): void {
     const ref = this.dialogService.open(
-    AccountPayableDialogComponent,
+    TransactionDialogComponent,
       {
         mode: 'edit',
         value: {
-          description: account.description,
-          amount: account.amount,
-          category: account.category.name,
-          expirationDate: account.expirationDate,
-          status: account.status == "PAID" ? "PAGO" : "PENDENTE",
-          bankAccount: account.bankAccount.name,
-          type: account.type == "PASSIVO" ? "PASSIVO" : "ATIVO"
+          description: transaction.description,
+          amount: transaction.amount,
+          category: transaction.category.name,
+          expirationDate: transaction.expirationDate,
+          status: transaction.status == "PAID" ? "PAGO" : "PENDENTE",
+          bankAccount: transaction.bankAccount.name,
+          type: transaction.type == "PASSIVO" ? "PASSIVO" : "ATIVO"
         },
       }
     );
 
     ref.afterClosed().subscribe(formData => {
       if (!formData) return;
-      this.updateAccount(account.id, formData);
+      this.updateTransaction(transaction.id, formData);
     });
 
   }
 
-  onToggleStatus(account: AccountPayableResponse): void {
-    // alterna entre PENDENTE e PAGO; mantém VENCIDO se a data passou
+  onToggleStatus(transaction: TransactionResponse): void {
+    // TODO: alterna entre PENDENTE e PAGO; mantém VENCIDO se a data passou
 
-    this.accountPayableService.paid(account.id).subscribe({
+    this.transactionService.paid(transaction.id).subscribe({
       next: (data) => {
         this.showSnackBar('Status atualizado!', 'success');
-        account.status = data.status
+        transaction.status = data.status
       },
       error: (error: any) => {
         this.showSnackBar(error, "error")
@@ -167,19 +165,19 @@ export class AccountPayableComponent implements OnInit {
 
   }
 
-  onDeleteAccount(event: any): void {
-    // if (confirm(`Excluir "${account.title}"?`)) {
-    //   this.accounts = this.accounts.filter(a => a.id !== account.id);
-    //   this.loadAccounts();
-    //   this.showSnackBar('Conta excluída com sucesso!', 'success');
+  onDeleteTransaction(event: any): void {
+    // if (confirm(`Excluir "${Transaction.title}"?`)) {
+    //   this.Transactions = this.Transactions.filter(a => a.id !== Transaction.id);
+    //   this.loadTransactions();
+    //   this.showSnackBar('Lançamento excluída com sucesso!', 'success');
     // }
   }
 
-  private createAccount(dto: AccountPayableDTO): void {
-    this.accountPayableService.add(dto).subscribe({
-      next: (account: AccountPayableResponse) => {
-        this.filteredAccounts.push(account);
-        this.showSnackBar('Conta criada com sucesso!', 'success');
+  private createTransaction(dto: TransactionDTO): void {
+    this.transactionService.add(dto).subscribe({
+      next: (transaction: TransactionResponse) => {
+        this.filteredTransactions.push(transaction);
+        this.showSnackBar('Lançamento criada com sucesso!', 'success');
       }, error: (error: any) => {
         this.showSnackBar(error, error);
       },
@@ -190,13 +188,13 @@ export class AccountPayableComponent implements OnInit {
 
   }
 
-  private updateAccount(id: number, formData: AccountPayableFormData): void {
-    this.accountPayableService.update(id ,formData).subscribe({
-      next: (account) => {
-        const idx = this.filteredAccounts.findIndex(a => a.id === id);
+  private updateTransaction(id: number, formData: TransactionFormData): void {
+    this.transactionService.update(id ,formData).subscribe({
+      next: (transaction) => {
+        const idx = this.filteredTransactions.findIndex(a => a.id === id);
         if (idx !== -1) {
-          this.filteredAccounts[idx] = account;
-          this.showSnackBar('Conta atualizada com sucesso!', 'success');
+          this.filteredTransactions[idx] = transaction;
+          this.showSnackBar('Lançamento atualizada com sucesso!', 'success');
         }
       },
       error: (error: any) => {
@@ -226,7 +224,7 @@ export class AccountPayableComponent implements OnInit {
     return this.dateService.formatDateByString(dateString);
   }
 
-  getStatusChip(status: AccountPayableStatus): { text: string; class: string } {
+  getStatusChip(status: TransactionStatus): { text: string; class: string } {
     switch (status) {
       case 'PAID': return { text: 'PAGO', class: 'chip-paid' };
       default: return { text: 'PENDENTE', class: 'chip-pending' };

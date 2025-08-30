@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BankAccount } from '../../../interfaces/BankAccount';
-import { PageResponse } from '../../../interfaces/PageResponse';
-import { SpringPageable } from '../../../interfaces/SpringPageable';
-import { BankAccountResponse } from '../../../interfaces/BankAccountResponse';
-import { BankAccountFormData } from '../../../interfaces/BankAccountFormData';
+import { BankAccount } from '../interfaces/BankAccount';
+import { BankAccountResponse } from '../interfaces/BankAccountResponse';
+import { BankAccountFormData } from '../interfaces/BankAccountFormData';
 import { map } from 'rxjs/operators';
+import { SpringPageable } from '../../../core/interfaces/SpringPageable';
+import { PageResponse } from '../../../core/interfaces/PageResponse';
 
 
 @Injectable({
