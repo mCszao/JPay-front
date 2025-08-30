@@ -50,17 +50,17 @@ export class TransactionComponent implements OnInit {
 
   private loadAllData() {
     this.isLoading = true;
-    const accounts$ = this.transactionService.getAll(this.currentPage);
+    const transactions$ = this.transactionService.getAll(this.currentPage);
     const out$ = this.transactionService.getTotalAmountByType('PASSIVO');
     const in$ = this.transactionService.getTotalAmountByType('ATIVO');
 
     forkJoin({
-      accounts: accounts$,
+      transactions: transactions$,
       totalOut: out$,
       totalIn: in$,
     }).subscribe({
-      next: ({ accounts, totalOut, totalIn}) => {
-        this.allTransactions = accounts.content ?? [];
+      next: ({ transactions, totalOut, totalIn}) => {
+        this.allTransactions = transactions.content ?? [];
         this.filteredTransactions = [...this.allTransactions];
         this.totalAmountOut = totalOut ?? 0;
         this.totalAmountIn = totalIn ?? 0;

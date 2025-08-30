@@ -9,3 +9,4 @@ export interface TransactionDTO {
   bankAccountId: number,
   status: TransactionStatus
   type: TransactionType
+}

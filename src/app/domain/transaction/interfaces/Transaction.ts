@@ -1,5 +1,6 @@
-import { TransactionStatus } from "../domain/types/TransactionStatus";
-import { TransactionType } from "../domain/types/TransactionType";
+import { TransactionStatus } from "../../types/TransactionStatus";
+import { TransactionType } from "../../types/TransactionType";
+
 
 export interface Transaction {
   id: number;

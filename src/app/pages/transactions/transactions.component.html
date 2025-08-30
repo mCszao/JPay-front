@@ -1,5 +1,5 @@
 <app-main-container>
-  <app-page-header page-name="Contas a Pagar" page-description="Gerencie suas contas a pagar"></app-page-header>
+  <app-page-header page-name="Lançamentos" page-description="Gerencie seus lançamentos"></app-page-header>
 
   <app-summary-cards-container>
     <app-summary-card label-text="Total recebido" material-icon-name="trending_up" [amount]="totalReceive" color="green"></app-summary-card>
@@ -10,9 +10,9 @@
   </app-summary-cards-container>
 
   <app-search-bar
-  placeholder="Buscar contas a pagar pela ou descrição..."
+  placeholder="Buscar lançamentos pela descrição..."
   filterLabel="Todas as categorias"
-  addButtonLabel="+ Nova Conta a Pagar"
+  addButtonLabel="+ Novo Lançamento"
   (search)="onSearch($event)"
   (add)="onNewTransaction()"
   [showFilter]="true"
