@@ -148,11 +148,10 @@ export class TransactionComponent implements OnInit {
   }
 
   onToggleStatus(transaction: TransactionResponse): void {
-    // TODO: alterna entre PENDENTE e PAGO; mantém VENCIDO se a data passou
-
-    this.transactionService.paid(transaction.id).subscribe({
+    if (transaction.status == "PENDING") {
+      this.transactionService.paid(transaction.id).subscribe({
       next: (data) => {
-        this.showSnackBar('Status atualizado!', 'success');
+        this.showSnackBar('Conta paga!', 'success');
         transaction.status = data.status
       },
       error: (error: any) => {
@@ -161,7 +160,22 @@ export class TransactionComponent implements OnInit {
       complete: () => {
         this.buildStats();
       }
-    })
+      })
+    }
+    if (transaction.status == "PAID") {
+      this.transactionService.refund(transaction.id).subscribe({
+      next: (data) => {
+        this.showSnackBar('Conta estornada!', 'success');
+        transaction.status = data.status
+      },
+      error: (error: any) => {
+        this.showSnackBar(error, "error")
+      },
+      complete: () => {
+        this.buildStats();
+      }
+      })
+    }
 
   }
 
@@ -177,7 +191,7 @@ export class TransactionComponent implements OnInit {
     this.transactionService.add(dto).subscribe({
       next: (transaction: TransactionResponse) => {
         this.filteredTransactions.push(transaction);
-        this.showSnackBar('Lançamento criada com sucesso!', 'success');
+        this.showSnackBar('Lançamento criadO com sucesso!', 'success');
       }, error: (error: any) => {
         this.showSnackBar(error, error);
       },
@@ -194,7 +208,7 @@ export class TransactionComponent implements OnInit {
         const idx = this.filteredTransactions.findIndex(a => a.id === id);
         if (idx !== -1) {
           this.filteredTransactions[idx] = transaction;
-          this.showSnackBar('Lançamento atualizada com sucesso!', 'success');
+          this.showSnackBar('Lançamento atualizadO com sucesso!', 'success');
         }
       },
       error: (error: any) => {

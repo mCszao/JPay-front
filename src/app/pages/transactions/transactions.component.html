@@ -10,19 +10,19 @@
   </app-summary-cards-container>
 
   <app-search-bar
-  placeholder="Buscar lançamentos pela descrição..."
-  filterLabel="Todas as categorias"
-  addButtonLabel="+ Novo Lançamento"
-  (search)="onSearch($event)"
-  (add)="onNewTransaction()"
-  [showFilter]="true"
-></app-search-bar>
+    placeholder="Buscar lançamentos pela descrição..."
+    filterLabel="Todas as categorias"
+    addButtonLabel="+ Novo Lançamento"
+    (search)="onSearch($event)"
+    (add)="onNewTransaction()"
+    [showFilter]="true"
+  ></app-search-bar>
 
-<app-transactions-list
-  [items]="filteredTransactions"
-  (edit)="onEditTransaction($event)"
-  (toggleStatus)="onToggleStatus($event)"
-  (remove)="onDeleteTransaction($event)"
-></app-transactions-list>
+  <app-transactions-list
+    [items]="filteredTransactions"
+    (edit)="onEditTransaction($event)"
+    (toggleStatus)="onToggleStatus($event)"
+    (remove)="onDeleteTransaction($event)"
+  ></app-transactions-list>
 
 </app-main-container>

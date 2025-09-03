@@ -74,5 +74,9 @@ export class TransactionService {
     return resp;
   }
 
+  refund(id: number): Observable<TransactionResponse> {
+     const resp = this.http.post<TransactionResponse>(this.URL+`/${id}/refund`, {});
 
+    return resp;
+  }
 }
