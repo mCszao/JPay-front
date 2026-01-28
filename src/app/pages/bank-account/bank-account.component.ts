@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { MainContainerComponent } from "../../components/main-container/main-container.component";
 import { PageHeaderComponent } from "../../components/page-header/page-header.component";
-import { SummaryCardsContainerComponent } from "../../components/summary-cards-container/summary-cards-container.component";
+import { SummaryCardsContainerComponent } from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
 import { SummaryCardComponent } from "../../components/summary-card/summary-card.component";
 import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BankAccountsListComponent } from "../../components/bank-accounts-list/bank-accounts-list.component";
 import { DateService } from '../../core/utils/date/date.util';
 import { PageResponse } from '../../core/interfaces/PageResponse';
-import { BankAccountsDialogComponent } from '../../components/bank-accounts-dialog/bank-accounts-dialog.component';
+import { BankAccountsDialogComponent } from '../../components/bank-accounts-list/bank-accounts-dialog/bank-accounts-dialog.component';
 import { DialogService } from '../../core/services/dialog/dialog.service';
 import { BankAccountService } from '../../domain/bank-account/services/bank-account.service';
 import { BankAccount } from '../../domain/bank-account/interfaces/BankAccount';

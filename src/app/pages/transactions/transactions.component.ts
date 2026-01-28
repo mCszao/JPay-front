@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MainContainerComponent } from "../../components/main-container/main-container.component";
 import { PageHeaderComponent } from "../../components/page-header/page-header.component";
-import { SummaryCardsContainerComponent } from "../../components/summary-cards-container/summary-cards-container.component";
+import { SummaryCardsContainerComponent } from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
 import { SummaryCardComponent } from "../../components/summary-card/summary-card.component";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
@@ -11,7 +11,7 @@ import { forkJoin } from 'rxjs';
 import { TransactionListComponent } from '../../components/transactions-list/transactions-list.component';
 import { TransactionResponse } from '../../domain/transaction/interfaces/TransactionResponse';
 import { TransactionService } from '../../domain/transaction/services/transaction.service';
-import { TransactionDialogComponent } from '../../components/transactions-dialog/transaction-dialog.component';
+import { TransactionDialogComponent } from '../../components/transactions-list/transactions-dialog/transaction-dialog.component';
 import { TransactionDTO } from '../../domain/transaction/interfaces/TransactionDTO';
 import { TransactionFormData } from '../../domain/transaction/interfaces/TransactionFormData';
 import { TransactionStatus } from '../../domain/types/TransactionStatus';

@@ -3,13 +3,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { MainContainerComponent } from "../../components/main-container/main-container.component";
 import { PageHeaderComponent } from "../../components/page-header/page-header.component";
-import { SummaryCardsContainerComponent } from "../../components/summary-cards-container/summary-cards-container.component";
+import { SummaryCardsContainerComponent } from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
 import { SummaryCardComponent } from "../../components/summary-card/summary-card.component";
 import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
 import { Category } from '../../domain/category/interfaces/Category';
 import { CategoryFormData } from '../../domain/category/interfaces/CategoryFormData';
 import { CategoriesListComponent } from "../../components/categories-list/categories-list.component";
-import { CategoryDialogComponent, CategoryDialogData } from '../../components/category-dialog/category-dialog.component';
+import { CategoryDialogComponent } from '../../components/categories-list/category-dialog/category-dialog.component';
 import { DialogService } from '../../core/services/dialog/dialog.service';
 import { CategoryResponse } from '../../domain/category/interfaces/CategoryResponse';
 import { DateService } from '../../core/utils/date/date.util';

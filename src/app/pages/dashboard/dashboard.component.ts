@@ -6,7 +6,7 @@ import { MatChipsModule } from "@angular/material/chips"
 import { MatButtonModule } from "@angular/material/button"
 import { NgxChartsModule } from "@swimlane/ngx-charts"
 import { SummaryCardComponent } from '../../components/summary-card/summary-card.component';
-import { SummaryCardsContainerComponent } from '../../components/summary-cards-container/summary-cards-container.component';
+import { SummaryCardsContainerComponent } from '../../components/summary-card/summary-cards-container/summary-cards-container.component';
 import { PageHeaderComponent } from "../../components/page-header/page-header.component";
 import { MainContainerComponent } from '../../components/main-container/main-container.component';
 import { CategoryTotals } from '../../domain/category/interfaces/CategoryTotals';

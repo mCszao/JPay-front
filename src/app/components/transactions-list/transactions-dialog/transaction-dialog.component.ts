@@ -6,13 +6,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { Transaction } from '../../domain/transaction/interfaces/Transaction';
-import { DialogData } from '../../core/interfaces/DialogData';
-import { CategoryResponse } from '../../domain/category/interfaces/CategoryResponse';
-import { CategoryService } from '../../domain/category/services/category.service';
-import { BankAccountService } from '../../domain/bank-account/services/bank-account.service';
-import { TransactionDTO } from '../../domain/transaction/interfaces/TransactionDTO';
-import { BankAccountResponse } from '../../domain/bank-account/interfaces/BankAccountResponse';
+import { Transaction } from '../../../domain/transaction/interfaces/Transaction';
+import { DialogData } from '../../../core/interfaces/DialogData';
+import { CategoryResponse } from '../../../domain/category/interfaces/CategoryResponse';
+import { CategoryService } from '../../../domain/category/services/category.service';
+import { BankAccountService } from '../../../domain/bank-account/services/bank-account.service';
+import { TransactionDTO } from '../../../domain/transaction/interfaces/TransactionDTO';
+import { BankAccountResponse } from '../../../domain/bank-account/interfaces/BankAccountResponse';
 
 
 interface TransactionDialogData extends DialogData<Transaction>{}
@@ -29,7 +29,7 @@ interface TransactionDialogData extends DialogData<Transaction>{}
     MatButtonModule,
   ],
   templateUrl: './transaction-dialog.component.html',
-  styleUrls: ['../dialog.shared.scss'],
+  styleUrls: ['../../dialog.shared.scss'],
 })
 export class TransactionDialogComponent {
   readonly statusOptions: string[] = ['PENDENTE', 'PAGO'];
