@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MainContainerComponent} from "../../components/main-container/main-container.component";
 import {PageHeaderComponent} from "../../components/page-header/page-header.component";
 import {
@@ -27,7 +27,7 @@ import {BankAccountResponse} from '../../domain/bank-account/interfaces/BankAcco
   templateUrl: './bank-account.component.html',
   styleUrl: './bank-account.component.scss'
 })
-export class BankAccountComponent {
+export class BankAccountComponent implements OnInit {
 
   filteredBankAccounts: BankAccountResponse[] = [];
   showInactive: boolean = false;
@@ -35,15 +35,12 @@ export class BankAccountComponent {
   currentPage: number = 0;
   totalBankAccounts: number = 0;
 
-  constructor(
-    private snackBar: MatSnackBar,
-    private dateService: DateService,
-    private bankAccountService: BankAccountService,
-    private dialogService: DialogService
-  ) {
-    this.loadBankAccounts();
+  constructor(private snackBar: MatSnackBar, private dateService: DateService, private bankAccountService: BankAccountService, private dialogService: DialogService) {
   }
 
+  ngOnInit(): void {
+    this.loadBankAccounts();
+  }
 
   private loadBankAccounts(): void {
     this.isLoading = true;

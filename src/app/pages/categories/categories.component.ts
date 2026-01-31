@@ -1,28 +1,30 @@
-import { Component, signal } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {Component, OnInit, signal} from '@angular/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
-import { MainContainerComponent } from "../../components/main-container/main-container.component";
-import { PageHeaderComponent } from "../../components/page-header/page-header.component";
-import { SummaryCardsContainerComponent } from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
-import { SummaryCardComponent } from "../../components/summary-card/summary-card.component";
-import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
-import { Category } from '../../domain/category/interfaces/Category';
-import { CategoryFormData } from '../../domain/category/interfaces/CategoryFormData';
-import { CategoriesListComponent } from "../../components/categories-list/categories-list.component";
-import { CategoryDialogComponent } from '../../components/categories-list/category-dialog/category-dialog.component';
-import { DialogService } from '../../core/services/dialog/dialog.service';
-import { CategoryResponse } from '../../domain/category/interfaces/CategoryResponse';
-import { DateService } from '../../core/utils/date/date.util';
-import { CategoryService } from '../../domain/category/services/category.service';
+import {MainContainerComponent} from "../../components/main-container/main-container.component";
+import {PageHeaderComponent} from "../../components/page-header/page-header.component";
+import {
+  SummaryCardsContainerComponent
+} from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
+import {SummaryCardComponent} from "../../components/summary-card/summary-card.component";
+import {SearchBarComponent} from "../../components/search-bar/search-bar.component";
+import {Category} from '../../domain/category/interfaces/Category';
+import {CategoryFormData} from '../../domain/category/interfaces/CategoryFormData';
+import {CategoriesListComponent} from "../../components/categories-list/categories-list.component";
+import {CategoryDialogComponent} from '../../components/categories-list/category-dialog/category-dialog.component';
+import {DialogService} from '../../core/services/dialog/dialog.service';
+import {CategoryResponse} from '../../domain/category/interfaces/CategoryResponse';
+import {DateService} from '../../core/utils/date/date.util';
+import {CategoryService} from '../../domain/category/services/category.service';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [ MainContainerComponent, PageHeaderComponent, SummaryCardsContainerComponent, SummaryCardComponent, SearchBarComponent, CategoriesListComponent],
-templateUrl: './categories.component.html',
+  imports: [MainContainerComponent, PageHeaderComponent, SummaryCardsContainerComponent, SummaryCardComponent, SearchBarComponent, CategoriesListComponent],
+  templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.scss']
 })
-export class CategoriesComponent {
+export class CategoriesComponent implements OnInit {
 
   filteredCategories: Category[] = [];
   showInactive: boolean = false;
@@ -33,12 +35,10 @@ export class CategoriesComponent {
   mostUsedCategorie = signal("Sem lançamentos cadastrados")
 
 
-  constructor(
-    private snackBar: MatSnackBar,
-    private dialogService: DialogService,
-    private categoryService: CategoryService,
-    private dateService: DateService
-  ) {
+  constructor(private snackBar: MatSnackBar, private dialogService: DialogService, private categoryService: CategoryService, private dateService: DateService) {
+  }
+
+  ngOnInit(): void {
     this.loadCategories();
   }
 
@@ -77,17 +77,17 @@ export class CategoriesComponent {
   }
 
   onNewCategory(): void {
-    const ref = this.dialogService.open(CategoryDialogComponent, { mode: 'create' });
+    const ref = this.dialogService.open(CategoryDialogComponent, {mode: 'create'});
 
     ref.afterClosed().subscribe(formData => {
       if (!formData) return;
       this.createCategory(formData);
     });
-}
+  }
 
   onEditCategory(category: Category): void {
     const ref = this.dialogService.open(
-    CategoryDialogComponent,
+      CategoryDialogComponent,
       {
         mode: 'edit',
         value: {
@@ -107,15 +107,15 @@ export class CategoriesComponent {
     const action = category.active ? 'desativa' : 'ativa';
 
     this.categoryService.deactivate(category.id).subscribe({
-        next: () => {
-          this.showSnackBar(`Categoria ${action}da com sucesso!`, 'success');
-          category.active = !category.active;
-          this.buildStats();
-        },
-        error: (error: any) => {
-          this.showSnackBar(error.message, 'error');
-        }
-      })
+      next: () => {
+        this.showSnackBar(`Categoria ${action}da com sucesso!`, 'success');
+        category.active = !category.active;
+        this.buildStats();
+      },
+      error: (error: any) => {
+        this.showSnackBar(error.message, 'error');
+      }
+    })
   }
 
   onDeleteCategory(category: Category): void {
@@ -149,11 +149,12 @@ export class CategoriesComponent {
   private updateCategory(id: number, formData: CategoryFormData): void {
     this.categoryService.update(id, formData).subscribe({
       next: (category: CategoryResponse) => {
-         const categoryIndex = this.filteredCategories.findIndex(c => c.id === id);
+        const categoryIndex = this.filteredCategories.findIndex(c => c.id === id);
         if (categoryIndex !== -1) {
           this.filteredCategories[categoryIndex] = category;
           this.showSnackBar('Categoria atualizada com sucesso!', 'success');
-      }},
+        }
+      },
       error: (error: any) => {
         this.showSnackBar(error.message, 'error');
       }
@@ -180,7 +181,7 @@ export class CategoriesComponent {
       next: (category: CategoryResponse) => {
         this.mostUsedCategorie.set(category.name);
       }
-      ,error: (error: any) => {
+      , error: (error: any) => {
         this.showSnackBar(error, "error");
       }
     })

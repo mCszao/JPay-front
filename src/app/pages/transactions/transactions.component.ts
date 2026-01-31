@@ -1,21 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { MainContainerComponent } from "../../components/main-container/main-container.component";
-import { PageHeaderComponent } from "../../components/page-header/page-header.component";
-import { SummaryCardsContainerComponent } from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
-import { SummaryCardComponent } from "../../components/summary-card/summary-card.component";
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
-import { DateService } from '../../core/utils/date/date.util';
-import { DialogService } from '../../core/services/dialog/dialog.service';
-import { forkJoin } from 'rxjs';
-import { TransactionListComponent } from '../../components/transactions-list/transactions-list.component';
-import { TransactionResponse } from '../../domain/transaction/interfaces/TransactionResponse';
-import { TransactionService } from '../../domain/transaction/services/transaction.service';
-import { TransactionDialogComponent } from '../../components/transactions-list/transactions-dialog/transaction-dialog.component';
-import { TransactionDTO } from '../../domain/transaction/interfaces/TransactionDTO';
-import { TransactionFormData } from '../../domain/transaction/interfaces/TransactionFormData';
-import { TransactionStatus } from '../../domain/types/TransactionStatus';
-
+import {Component, OnInit} from '@angular/core';
+import {MainContainerComponent} from "../../components/main-container/main-container.component";
+import {PageHeaderComponent} from "../../components/page-header/page-header.component";
+import {
+  SummaryCardsContainerComponent
+} from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
+import {SummaryCardComponent} from "../../components/summary-card/summary-card.component";
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {SearchBarComponent} from "../../components/search-bar/search-bar.component";
+import {DateService} from '../../core/utils/date/date.util';
+import {DialogService} from '../../core/services/dialog/dialog.service';
+import {forkJoin} from 'rxjs';
+import {TransactionListComponent} from '../../components/transactions-list/transactions-list.component';
+import {TransactionResponse} from '../../domain/transaction/interfaces/TransactionResponse';
+import {TransactionService} from '../../domain/transaction/services/transaction.service';
+import {
+  TransactionDialogComponent
+} from '../../components/transactions-list/transactions-dialog/transaction-dialog.component';
+import {TransactionDTO} from '../../domain/transaction/interfaces/TransactionDTO';
+import {TransactionFormData} from '../../domain/transaction/interfaces/TransactionFormData';
+import {TransactionStatus} from '../../domain/types/TransactionStatus';
 
 
 @Component({
@@ -37,12 +40,8 @@ export class TransactionComponent implements OnInit {
   totalAmountIn = 0;
   balance = 0;
 
-  constructor(
-    private snackBar: MatSnackBar,
-    private dateService: DateService,
-    private dialogService: DialogService,
-    private transactionService: TransactionService
-  ) {}
+  constructor(private snackBar: MatSnackBar, private dateService: DateService, private dialogService: DialogService, private transactionService: TransactionService) {
+  }
 
   ngOnInit(): void {
     this.loadAllData();
@@ -59,7 +58,7 @@ export class TransactionComponent implements OnInit {
       totalOut: out$,
       totalIn: in$,
     }).subscribe({
-      next: ({ transactions, totalOut, totalIn}) => {
+      next: ({transactions, totalOut, totalIn}) => {
         this.allTransactions = transactions.content ?? [];
         this.filteredTransactions = [...this.allTransactions];
         this.totalAmountOut = totalOut ?? 0;
@@ -88,8 +87,7 @@ export class TransactionComponent implements OnInit {
         if (ac.type === 'ATIVO') {
           this.totalReceive += ac.amount;
           this.totalAmountIn += ac.amount;
-        }
-        else {
+        } else {
           this.totalPaid += ac.amount;
           this.totalAmountOut += ac.amount;
         }
@@ -104,18 +102,18 @@ export class TransactionComponent implements OnInit {
   }
 
   onSearch(textInput: string): void {
-     if (textInput.trim()) {
-        this.filteredTransactions = this.filteredTransactions.filter(a =>
-          a.description.toLowerCase().includes(textInput.toLowerCase())
-        );
-      } else {
-        this.filteredTransactions = this.allTransactions;
-      }
+    if (textInput.trim()) {
+      this.filteredTransactions = this.filteredTransactions.filter(a =>
+        a.description.toLowerCase().includes(textInput.toLowerCase())
+      );
+    } else {
+      this.filteredTransactions = this.allTransactions;
+    }
   }
 
   onNewTransaction(): void {
 
-    const ref = this.dialogService.open(TransactionDialogComponent, { mode: 'create' });
+    const ref = this.dialogService.open(TransactionDialogComponent, {mode: 'create'});
 
     ref.afterClosed().subscribe(formData => {
       if (!formData) return;
@@ -125,7 +123,7 @@ export class TransactionComponent implements OnInit {
 
   onEditTransaction(transaction: TransactionResponse): void {
     const ref = this.dialogService.open(
-    TransactionDialogComponent,
+      TransactionDialogComponent,
       {
         mode: 'edit',
         value: {
@@ -150,30 +148,30 @@ export class TransactionComponent implements OnInit {
   onToggleStatus(transaction: TransactionResponse): void {
     if (transaction.status == "PENDING") {
       this.transactionService.paid(transaction.id).subscribe({
-      next: (data) => {
-        this.showSnackBar('Conta paga!', 'success');
-        transaction.status = data.status
-      },
-      error: (error: any) => {
-        this.showSnackBar(error, "error")
-      },
-      complete: () => {
-        this.buildStats();
-      }
+        next: (data) => {
+          this.showSnackBar('Conta paga!', 'success');
+          transaction.status = data.status
+        },
+        error: (error: any) => {
+          this.showSnackBar(error, "error")
+        },
+        complete: () => {
+          this.buildStats();
+        }
       })
     }
     if (transaction.status == "PAID") {
       this.transactionService.refund(transaction.id).subscribe({
-      next: (data) => {
-        this.showSnackBar('Conta estornada!', 'success');
-        transaction.status = data.status
-      },
-      error: (error: any) => {
-        this.showSnackBar(error, 'error')
-      },
-      complete: () => {
-        this.buildStats();
-      }
+        next: (data) => {
+          this.showSnackBar('Conta estornada!', 'success');
+          transaction.status = data.status
+        },
+        error: (error: any) => {
+          this.showSnackBar(error, 'error')
+        },
+        complete: () => {
+          this.buildStats();
+        }
       })
     }
 
@@ -209,7 +207,7 @@ export class TransactionComponent implements OnInit {
   }
 
   private updateTransaction(id: number, formData: TransactionFormData): void {
-    this.transactionService.update(id ,formData).subscribe({
+    this.transactionService.update(id, formData).subscribe({
       next: (transaction) => {
         const idx = this.filteredTransactions.findIndex(a => a.id === id);
         if (idx !== -1) {
@@ -246,8 +244,10 @@ export class TransactionComponent implements OnInit {
 
   getStatusChip(status: TransactionStatus): { text: string; class: string } {
     switch (status) {
-      case 'PAID': return { text: 'PAGO', class: 'chip-paid' };
-      default: return { text: 'PENDENTE', class: 'chip-pending' };
+      case 'PAID':
+        return {text: 'PAGO', class: 'chip-paid'};
+      default:
+        return {text: 'PENDENTE', class: 'chip-pending'};
     }
   }
 
