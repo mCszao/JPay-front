@@ -169,7 +169,7 @@ export class TransactionComponent implements OnInit {
         transaction.status = data.status
       },
       error: (error: any) => {
-        this.showSnackBar(error, "error")
+        this.showSnackBar(error, 'error')
       },
       complete: () => {
         this.buildStats();
@@ -179,12 +179,18 @@ export class TransactionComponent implements OnInit {
 
   }
 
-  onDeleteTransaction(event: any): void {
-    // if (confirm(`Excluir "${Transaction.title}"?`)) {
-    //   this.Transactions = this.Transactions.filter(a => a.id !== Transaction.id);
-    //   this.loadTransactions();
-    //   this.showSnackBar('Lançamento excluída com sucesso!', 'success');
-    // }
+  onDeleteTransaction(transaction: TransactionResponse): void {
+    if (confirm(`Excluir N° ${transaction.id}?`)) {
+      this.transactionService.delete(transaction.id).subscribe({
+        next: () => {
+          this.showSnackBar('Lançamento excluída com sucesso!', 'success');
+          this.loadAllData();
+        },
+        error: (error: any) => {
+          this.showSnackBar(error, 'error');
+        }
+      });
+    }
   }
 
   private createTransaction(dto: TransactionDTO): void {
@@ -208,7 +214,7 @@ export class TransactionComponent implements OnInit {
         const idx = this.filteredTransactions.findIndex(a => a.id === id);
         if (idx !== -1) {
           this.filteredTransactions[idx] = transaction;
-          this.showSnackBar('Lançamento atualizadO com sucesso!', 'success');
+          this.showSnackBar('Lançamento atualizado com sucesso!', 'success');
         }
       },
       error: (error: any) => {

@@ -1,20 +1,23 @@
-import { Component } from '@angular/core';
-import { MainContainerComponent } from "../../components/main-container/main-container.component";
-import { PageHeaderComponent } from "../../components/page-header/page-header.component";
-import { SummaryCardsContainerComponent } from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
-import { SummaryCardComponent } from "../../components/summary-card/summary-card.component";
-import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { BankAccountsListComponent } from "../../components/bank-accounts-list/bank-accounts-list.component";
-import { DateService } from '../../core/utils/date/date.util';
-import { PageResponse } from '../../core/interfaces/PageResponse';
-import { BankAccountsDialogComponent } from '../../components/bank-accounts-list/bank-accounts-dialog/bank-accounts-dialog.component';
-import { DialogService } from '../../core/services/dialog/dialog.service';
-import { BankAccountService } from '../../domain/bank-account/services/bank-account.service';
-import { BankAccount } from '../../domain/bank-account/interfaces/BankAccount';
-import { BankAccountFormData } from '../../domain/bank-account/interfaces/BankAccountFormData';
-import { BankAccountResponse } from '../../domain/bank-account/interfaces/BankAccountResponse';
-
+import {Component} from '@angular/core';
+import {MainContainerComponent} from "../../components/main-container/main-container.component";
+import {PageHeaderComponent} from "../../components/page-header/page-header.component";
+import {
+  SummaryCardsContainerComponent
+} from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
+import {SummaryCardComponent} from "../../components/summary-card/summary-card.component";
+import {SearchBarComponent} from "../../components/search-bar/search-bar.component";
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {BankAccountsListComponent} from "../../components/bank-accounts-list/bank-accounts-list.component";
+import {DateService} from '../../core/utils/date/date.util';
+import {PageResponse} from '../../core/interfaces/PageResponse';
+import {
+  BankAccountsDialogComponent
+} from '../../components/bank-accounts-list/bank-accounts-dialog/bank-accounts-dialog.component';
+import {DialogService} from '../../core/services/dialog/dialog.service';
+import {BankAccountService} from '../../domain/bank-account/services/bank-account.service';
+import {BankAccount} from '../../domain/bank-account/interfaces/BankAccount';
+import {BankAccountFormData} from '../../domain/bank-account/interfaces/BankAccountFormData';
+import {BankAccountResponse} from '../../domain/bank-account/interfaces/BankAccountResponse';
 
 
 @Component({
@@ -45,10 +48,12 @@ export class BankAccountComponent {
   private loadBankAccounts(): void {
     this.isLoading = true;
 
+
     this.bankAccountService.getAll(this.currentPage).subscribe({
       next: (data: PageResponse<BankAccount>) => {
         this.filteredBankAccounts = data.content;
-      }, error: (error: any) => {
+      },
+      error: (error: any) => {
         this.showSnackBar(error.message, 'error');
       }
     })
@@ -63,7 +68,7 @@ export class BankAccountComponent {
   }
 
   onSearch(textInput: string): void {
-   if (textInput.trim()) {
+    if (textInput.trim()) {
       this.filteredBankAccounts = this.filteredBankAccounts.filter(bank =>
         (bank.name.toLowerCase().includes(textInput.toLowerCase()) || bank.bank.toLowerCase().includes(textInput.toLowerCase())) &&
         (this.showInactive ? true : bank.active)
@@ -75,31 +80,31 @@ export class BankAccountComponent {
 
   onNewBankAccount(): void {
     // TODO: Abrir modal de criação
-    const ref = this.dialogService.open(BankAccountsDialogComponent, { mode: 'create' });
+    const ref = this.dialogService.open(BankAccountsDialogComponent, {mode: 'create'});
 
-      ref.afterClosed().subscribe(formData => {
-        if (!formData) return;
-        this.createBankAccount(formData);
+    ref.afterClosed().subscribe(formData => {
+      if (!formData) return;
+      this.createBankAccount(formData);
     });
   }
 
   onEditBankAccount(bankAccount: BankAccount): void {
     const ref = this.dialogService.open(
-        BankAccountsDialogComponent,
-          {
-            mode: 'edit',
-            value: {
-              name: bankAccount.name,
-              bank: bankAccount.bank,
-              currentBalance: bankAccount.currentBalance,
-            },
-          }
-        );
+      BankAccountsDialogComponent,
+      {
+        mode: 'edit',
+        value: {
+          name: bankAccount.name,
+          bank: bankAccount.bank,
+          currentBalance: bankAccount.currentBalance,
+        },
+      }
+    );
 
-        ref.afterClosed().subscribe(formData => {
-          if (!formData) return;
-          this.updateBankAccount(bankAccount.id, formData);
-        });
+    ref.afterClosed().subscribe(formData => {
+      if (!formData) return;
+      this.updateBankAccount(bankAccount.id, formData);
+    });
   }
 
   onToggleStatus(bankAccount: BankAccount): void {
@@ -116,12 +121,18 @@ export class BankAccountComponent {
 
   }
 
-  onDeleteBankAccount(event: any): void {
-    // if (confirm(`Tem certeza que deseja excluir a conta "${account.bankName}"?`)) {
-    //   this.bankAccounts = this.bankAccounts.filter(a => a.id !== account.id);
-    //   this.loadBankAccounts();
-    //   this.showSnackBar('Conta excluída com sucesso!', 'success');
-    // }
+  onDeleteBankAccount(account: BankAccount): void {
+    if (confirm(`Tem certeza que deseja excluir a conta "${account.name}"?`)) {
+      this.bankAccountService.delete(account.id).subscribe({
+        next: () => {
+          this.showSnackBar(`Conta deletada com sucesso!`, 'success');
+          this.loadBankAccounts();
+        },
+        error: (error: any) => {
+          this.showSnackBar(error.message, 'error');
+        }
+      })
+    }
   }
 
   private createBankAccount(formData: BankAccountFormData): void {
@@ -151,12 +162,12 @@ export class BankAccountComponent {
     })
 
 
-
   }
 
   formatDate(dateString: string): string {
     return this.dateService.formatDateByString(dateString);
   }
+
   getStatusText(active: boolean): string {
     return active ? 'Ativa' : 'Inativa';
   }

@@ -118,15 +118,19 @@ export class CategoriesComponent {
       })
   }
 
-  onDeleteCategory(event: any): void {
-    // if (confirm(`Tem certeza que deseja excluir a categoria "${category.name}"?`)) {
-    //   // TODO: Implementar chamada da API
-    //   // this.categoryService.deleteCategory(category.id).subscribe(...)
-
-    //   this.categories = this.categories.filter(c => c.id !== category.id);
-    //   this.loadCategories();
-    //   this.showSnackBar('Categoria excluída com sucesso!', 'success');
-    // }
+  onDeleteCategory(category: Category): void {
+    if (confirm(`Tem certeza que deseja excluir a categoria "${category.name}"?`)) {
+      // TODO: Implementar chamada da API
+      this.categoryService.delete(category.id).subscribe({
+        next: () => {
+          this.showSnackBar('Categoria excluída com sucesso!', 'success');
+          this.loadCategories();
+        },
+        error: (error: any) => {
+          this.showSnackBar(error.message, 'error');
+        }
+      })
+    }
   }
 
   private createCategory(formData: CategoryFormData): void {
