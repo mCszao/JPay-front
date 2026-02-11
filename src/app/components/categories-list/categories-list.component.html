@@ -23,12 +23,12 @@
           <span></span>
           <span></span>
           <div class="row-actions">
-            <button class="btn ghost" (click)="toggle.emit(c)">
+            <button class="btn ghost" [ngClass]="c.active ? 'btn-ok' : '' " (click)="toggle.emit(c)">
               <mat-icon>
                 {{ c.active ? 'toggle_on' : 'toggle_off' }}
               </mat-icon>
             </button>
-            <button class="btn ghost" (click)="edit.emit(c)">
+            <button class="btn ghost edit" (click)="edit.emit(c)">
               <mat-icon>edit</mat-icon>
             </button>
             <button class="btn danger" (click)="remove.emit(c)">

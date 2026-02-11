@@ -9,9 +9,10 @@
           @if(name != undefined && name != "") {
             <p class="card-value">{{name}}</p>
           }
-          @else if(quantity != undefined && quantity != "") {
+          @if(quantity != undefined && quantity != "") {
             <p class="card-value">{{quantity}}</p>
-          } @else if(amount != undefined && (amount >= 0 || amount <= 0)) {
+          }
+          @if(amount != undefined && ((!acceptZero && amount == 0) || (amount >= 0 || amount <= 0))) {
             <p class="card-value">{{ formatCurrency(amount) }}</p>
           }
         </div>

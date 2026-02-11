@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {MainContainerComponent} from "../../components/main-container/main-container.component";
 import {PageHeaderComponent} from "../../components/page-header/page-header.component";
 import {
@@ -18,6 +18,8 @@ import {BankAccountService} from '../../domain/bank-account/services/bank-accoun
 import {BankAccount} from '../../domain/bank-account/interfaces/BankAccount';
 import {BankAccountFormData} from '../../domain/bank-account/interfaces/BankAccountFormData';
 import {BankAccountResponse} from '../../domain/bank-account/interfaces/BankAccountResponse';
+import {BankAccountCardsInfo} from '../../domain/bank-account/interfaces/BankAccountCardsInfo';
+import {forkJoin} from 'rxjs';
 
 
 @Component({
@@ -30,10 +32,17 @@ import {BankAccountResponse} from '../../domain/bank-account/interfaces/BankAcco
 export class BankAccountComponent implements OnInit {
 
   filteredBankAccounts: BankAccountResponse[] = [];
-  showInactive: boolean = false;
+  showInactive: boolean = true;
   isLoading: boolean = false;
   currentPage: number = 0;
-  totalBankAccounts: number = 0;
+  totalQuantity = signal(0);
+  mvp = signal({} as BankAccountResponse)
+  mostUsed = signal({} as BankAccountResponse)
+
+  get getAccounts(): BankAccount[] {
+    if (!this.showInactive) return this.filteredBankAccounts.filter(b => b.active)
+    return this.filteredBankAccounts;
+  }
 
   constructor(private snackBar: MatSnackBar, private dateService: DateService, private bankAccountService: BankAccountService, private dialogService: DialogService) {
   }
@@ -52,6 +61,9 @@ export class BankAccountComponent implements OnInit {
       },
       error: (error: any) => {
         this.showSnackBar(error.message, 'error');
+      },
+      complete: () => {
+        this.buildStats();
       }
     })
 
@@ -76,7 +88,6 @@ export class BankAccountComponent implements OnInit {
   }
 
   onNewBankAccount(): void {
-    // TODO: Abrir modal de criação
     const ref = this.dialogService.open(BankAccountsDialogComponent, {mode: 'create'});
 
     ref.afterClosed().subscribe(formData => {
@@ -132,11 +143,38 @@ export class BankAccountComponent implements OnInit {
     }
   }
 
+  protected onCheckedActive(event: boolean) {
+    this.showInactive = event
+    this.loadBankAccounts()
+  }
+
+  private buildStats(): void {
+    const mvp$ = this.bankAccountService.getMvp()
+    const totalQtd$ = this.bankAccountService.getTotalQuantity()
+    const mostUsed$ = this.bankAccountService.getMostUsed()
+
+    forkJoin({
+      mvp: mvp$,
+      totalQtd: totalQtd$,
+      mostUsed: mostUsed$,
+    }).subscribe({
+      next: ({mvp, totalQtd, mostUsed}) => {
+        this.mvp.set(mvp)
+        this.totalQuantity.set(totalQtd)
+        this.mostUsed.set(mostUsed)
+      },
+      error: (err) => {
+        this.showSnackBar(err?.message ?? JSON.stringify(err), 'error');
+      },
+      complete: () => this.isLoading = false
+    });
+  }
+
   private createBankAccount(formData: BankAccountFormData): void {
     this.bankAccountService.add(formData).subscribe({
       next: (data: BankAccountResponse) => {
-        this.filteredBankAccounts.push(data);
         this.showSnackBar('Conta criada com sucesso!', 'success');
+        this.loadBankAccounts();
       },
       error: (error: any) => {
         this.showSnackBar(error, "error");

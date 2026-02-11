@@ -2,11 +2,13 @@
 
   <app-page-header page-name="Dashboard" page-description="Visão geral das suas finanças"></app-page-header>
   <app-summary-cards-container>
-     <app-summary-card color="blue" label-text="Saldo total das contas" material-icon-name="payment" [amount]="currentTotalBalance"></app-summary-card>
+    <app-summary-card color="blue" label-text="Saldo total das contas" material-icon-name="payment"
+                      [amount]="currentTotalBalance"/>
 
-    <app-summary-card color="green" label-text="Total Receitas" material-icon-name="attach_money" [amount]="totalAmountIn"></app-summary-card>
+    <app-summary-card color="green" label-text="Total Receitas" material-icon-name="attach_money"
+                      [amount]="totalAmountIn"/>
 
-    <app-summary-card color="green" label-text="Total Despesas" material-icon-name="warning" [amount]="totalAmountOut" color="red"></app-summary-card>
+    <app-summary-card color="red" label-text="Total Despesas" material-icon-name="warning" [amount]="totalAmountOut"/>
 
   </app-summary-cards-container>
 
@@ -30,7 +32,7 @@
         </div>
         <div class="chart-legend">
           <div class="legend-item" *ngFor="let item of categories">
-            <div class="legend-color" ></div>
+            <div class="legend-color"></div>
             <span class="legend-name">{{ item.name }}</span>
             <span class="legend-value">{{ formatCurrency(item.value) }}</span>
           </div>
@@ -43,13 +45,13 @@
       <mat-card-header>
         <mat-card-title>Despesas a vencer no próximo mês</mat-card-title>
         <mat-card-subtitle>
-          <!-- <button color="primary" (click)="onViewAllAccounts()">Ver todas</button> -->
+          <button color="primary" (click)="onViewAllAccounts()">Ver todas</button>
         </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <div class="accounts-list">
-          @if(recentAccounts.length === 0) {
-            <p>Sem vencimentos</p>
+          @if (recentAccounts.length === 0) {
+            <p class="accounts-list-empty">Sem vencimentos</p>
           }
           <div class="account-item" *ngFor="let account of recentAccounts">
             <div class="account-info">

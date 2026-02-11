@@ -1,3 +1,5 @@
+import {TransactionResponse} from '../../transaction/interfaces/TransactionResponse';
+
 export interface BankAccountResponse {
   id: number;
   name: string;
@@ -6,4 +8,5 @@ export interface BankAccountResponse {
   active: boolean;
   createdAt: string;
   updatedAt: string;
+  transactions?: TransactionResponse[]
 }

@@ -1,9 +1,9 @@
 .main-container {
-  max-width: 1720px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 24px 16px;
   min-height: calc(100vh - 64px);
-  background-color: #fafafa;
+  background-color: rgba(107, 114, 128, 0.24)
 }
 
 
@@ -12,3 +12,4 @@
     padding: 16px 12px;
   }
 }
+

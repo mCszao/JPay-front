@@ -27,12 +27,17 @@ import {CategoryService} from '../../domain/category/services/category.service';
 export class CategoriesComponent implements OnInit {
 
   filteredCategories: Category[] = [];
-  showInactive: boolean = false;
+  showInactive: boolean = true;
   isLoading: boolean = false;
   currentPage: number = 0;
   totalActiveCategories = signal(0);
   totalCategories = signal(0);
   mostUsedCategorie = signal("Sem lançamentos cadastrados")
+
+  get getCategories(): Category[] {
+    if (!this.showInactive) return this.filteredCategories.filter(c => c.active)
+    return this.filteredCategories
+  }
 
 
   constructor(private snackBar: MatSnackBar, private dialogService: DialogService, private categoryService: CategoryService, private dateService: DateService) {
@@ -42,7 +47,7 @@ export class CategoriesComponent implements OnInit {
     this.loadCategories();
   }
 
-  private loadCategories(): void {
+  protected loadCategories(): void {
     this.isLoading = true;
     this.categoryService.getAll(this.currentPage).subscribe({
       next: (categories) => {
@@ -55,21 +60,12 @@ export class CategoriesComponent implements OnInit {
         this.buildStats();
       }
     })
-    // TODO:liberar logica de ativos e inativos quando criar o checkbox
-    // setTimeout(() => {
-    //   this.filteredCategories = this.filteredCategories.filter(category =>
-    //     this.showInactive ? true : category.active
-    //   );
-    //   this.totalCategories = this.filteredCategories.length;
-    //   this.isLoading = false;
-    // }, 500);
   }
 
   onSearch(textInput: string): void {
     if (textInput.trim()) {
       this.filteredCategories = this.filteredCategories.filter(category =>
-        category.name.toLowerCase().includes(textInput.toLowerCase()) &&
-        (this.showInactive ? true : category.active)
+        category.name.toLowerCase().includes(textInput.toLowerCase())
       );
     } else {
       this.loadCategories();
@@ -133,6 +129,11 @@ export class CategoriesComponent implements OnInit {
     }
   }
 
+  protected onCheckedActive(event: boolean) {
+    this.showInactive = event
+    this.loadCategories()
+  }
+
   private createCategory(formData: CategoryFormData): void {
     this.categoryService.add(formData).subscribe({
       next: (category: CategoryResponse) => {
@@ -179,7 +180,7 @@ export class CategoriesComponent implements OnInit {
     this.totalActiveCategories.set(this.filteredCategories.filter(c => c.active).length)
     this.categoryService.mostUsed().subscribe({
       next: (category: CategoryResponse) => {
-        this.mostUsedCategorie.set(category.name);
+        this.mostUsedCategorie.set(category.id > 0 ? category.name : 'Sem lançamentos cadastrados');
       }
       , error: (error: any) => {
         this.showSnackBar(error, "error");

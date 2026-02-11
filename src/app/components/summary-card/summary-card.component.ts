@@ -10,11 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class SummaryCardComponent {
   @Input("label-text") labelText: string = "";
-  @Input("amount") amount: number = 0;
+  @Input("amount") amount?: number;
   @Input("quantity") quantity: string = "";
   @Input("name") name: string = "";
   @Input("material-icon-name") materialIconName: string = "";
   @Input("color") color: string = "";
+  @Input("acceptZero") acceptZero: boolean = false;
 
   formatCurrency(value: number): string {
     return new Intl.NumberFormat('pt-BR', {

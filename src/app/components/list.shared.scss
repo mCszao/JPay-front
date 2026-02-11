@@ -1,5 +1,4 @@
 .list-card {
-  margin-top: 3rem;
   background: #fff;
   border: 1px solid #eef0f3;
   border-radius: 12px;
@@ -54,6 +53,11 @@
   color: #374151;
   font-size: 13px;
   cursor: pointer;
+
+  &.edit:hover {
+   border-color: #1976d2;
+    color: #1565c0;
+  }
 }
 
 .btn.ghost:hover { background: #f8fafc; }

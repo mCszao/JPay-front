@@ -6,15 +6,9 @@
     [(ngModel)]="searchValue"
     (input)="onSearchChange(searchValue)"
   />
-
-  <!-- <select
-    class="search-select"
-    [(ngModel)]="selectedFilter"
-    (change)="onFilterChange(selectedFilter)"
-  >
-    <option value="">{{ filterLabel }}</option>
-    <option *ngFor="let option of filterOptions" [value]="option">{{ option }}</option>
-  </select> -->
+  @if (showInactiveFilter) {
+    <mat-checkbox [(ngModel)]="active" (change)="onCheckBoxChange()">Mostra Inativos</mat-checkbox>
+  }
 
   <button class="add-btn" (click)="onAddClick()">
     {{ addButtonLabel }}

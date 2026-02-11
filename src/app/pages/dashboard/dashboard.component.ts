@@ -18,6 +18,7 @@ import {TransactionResponse} from '../../domain/transaction/interfaces/Transacti
 import {CategoryService} from '../../domain/category/services/category.service';
 import {TransactionService} from '../../domain/transaction/services/transaction.service';
 import {BankAccountService} from '../../domain/bank-account/services/bank-account.service';
+import {Router} from '@angular/router';
 
 export interface SummaryData {
   totalBalance: number;
@@ -50,8 +51,7 @@ export class DashboardComponent implements OnInit {
 
   recentAccounts: TransactionResponse[] = [];
 
-  constructor(private categoryService: CategoryService, private snackBar: MatSnackBar, private transactionService: TransactionService, private bankAccountService: BankAccountService, private dateService: DateService) {
-
+  constructor(private categoryService: CategoryService, private snackBar: MatSnackBar, private transactionService: TransactionService, private bankAccountService: BankAccountService, private dateService: DateService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -95,7 +95,6 @@ export class DashboardComponent implements OnInit {
     const startDate = new Date();
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + 30);
-
 
     const formattedStartDate = this.dateService.formatDateByDateObject(startDate);
     const formattedEndDate = this.dateService.formatDateByDateObject(endDate);
@@ -162,7 +161,7 @@ export class DashboardComponent implements OnInit {
 
   onViewAllAccounts(): void {
     // TODO: Navegar para a página de listagem de contas
-    // this.router.navigate(['/accounts']);
+    this.router.navigate(['/transactions']);
   }
 
   private showSnackBar(message: string, type: 'success' | 'error' | 'info'): void {

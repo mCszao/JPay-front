@@ -43,7 +43,6 @@ export class BankAccountService {
     return this.http.post<BankAccountResponse>(this.URL, bankAccount);
   }
 
-
   update(id: number, bankAccount: BankAccountFormData): Observable<BankAccountResponse> {
     return this.http.put<BankAccountResponse>(this.URL + `/${id}`, bankAccount);
   }
@@ -54,6 +53,18 @@ export class BankAccountService {
 
   delete(id: number) {
     return this.http.delete<BankAccountResponse>(this.URL + `/${id}`);
+  }
+
+  getMvp() {
+    return this.http.get<BankAccountResponse>(`${this.URL}/mvp`);
+  }
+
+  getTotalQuantity() {
+    return this.http.get<number>(`${this.URL}/total`);
+  }
+
+  getMostUsed() {
+    return this.http.get<BankAccountResponse>(`${this.URL}/most-used`);
   }
 
 }
