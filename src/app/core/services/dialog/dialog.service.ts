@@ -8,6 +8,7 @@ export class DialogService {
   open<T, D = unknown>(component: any, data?: D, config?: MatDialogConfig<D>) {
     return this.dialog.open<T, D>(component, {
       data,
+      disableClose: true,
       autoFocus: false,
       restoreFocus: true,
       ...config,
