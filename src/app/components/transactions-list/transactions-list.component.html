@@ -22,8 +22,9 @@
               [class.chip-green]="ap.status === 'PAID'"
               [class.chip-yellow]="ap.status === 'PENDING'"
               >
-              {{ ap.status === "PAID" ? (ap.type === "ATIVO" ? "RECEBIDO" : "PAGO") : "PENDENTE" }}
+              {{ ap.status === "PAID" ? (ap.type === "ATIVO" ? "RECEBIDO" : "PAGO") : (ap.isExpired ? "VENCIDO" : "PENDENTE") }}
             </span>
+
           </span>
           <span class="cell-strong">{{ap.type}}</span>
           <div class="row-actions">

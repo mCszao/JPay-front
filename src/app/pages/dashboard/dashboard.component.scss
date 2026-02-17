@@ -129,7 +129,7 @@
         cursor: pointer;
 
         &:hover {
-          background-color: #f8f9fa;
+          background-color: var(--mat-sys-surface-container-high);
         }
 
         &:last-child {

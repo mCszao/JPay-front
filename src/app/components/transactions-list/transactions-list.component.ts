@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
-import { TransactionResponse } from '../../domain/transaction/interfaces/TransactionResponse';
+import {CommonModule} from '@angular/common';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {MatIcon} from '@angular/material/icon';
+import {TransactionResponse} from '../../domain/transaction/interfaces/TransactionResponse';
 
 
 @Component({

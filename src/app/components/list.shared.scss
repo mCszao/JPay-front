@@ -27,6 +27,10 @@
 .list-body .list-row {
   padding: 14px 16px;
   border-bottom: 1px solid #f3f4f6;
+  &:hover {
+    background-color: var(--mat-sys-surface-container-high);
+    cursor: pointer;
+  }
 }
 
 .list-body .list-row:last-child {
