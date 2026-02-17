@@ -1,10 +1,10 @@
-import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, throwError } from 'rxjs';
+import {HttpErrorResponse, HttpInterceptorFn} from '@angular/common/http';
+import {inject} from '@angular/core';
+import {catchError, throwError} from 'rxjs';
+import {SnackbarService} from '../services/snack-bar/snackbar.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-  const snackBar = inject(MatSnackBar);
+  const snackBar = inject(SnackbarService);
 
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
@@ -14,7 +14,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         err.error?.error ||
         `Erro ${err.status}: ${err.statusText}`;
 
-
+      snackBar.showSnackBar(message, 'error');
       return throwError(() => new Error(message))})
   );
 };

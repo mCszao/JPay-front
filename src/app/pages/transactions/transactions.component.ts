@@ -5,7 +5,6 @@ import {
   SummaryCardsContainerComponent
 } from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
 import {SummaryCardComponent} from "../../components/summary-card/summary-card.component";
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {SearchBarComponent} from "../../components/search-bar/search-bar.component";
 import {DateService} from '../../core/utils/date/date.util';
 import {DialogService} from '../../core/services/dialog/dialog.service';
@@ -19,6 +18,7 @@ import {
 import {TransactionDTO} from '../../domain/transaction/interfaces/TransactionDTO';
 import {TransactionFormData} from '../../domain/transaction/interfaces/TransactionFormData';
 import {TransactionStatus} from '../../domain/types/TransactionStatus';
+import {SnackbarService} from '../../core/services/snack-bar/snackbar.service';
 
 
 @Component({
@@ -40,7 +40,7 @@ export class TransactionComponent implements OnInit {
   totalAmountIn = 0;
   balance = 0;
 
-  constructor(private snackBar: MatSnackBar, private dateService: DateService, private dialogService: DialogService, private transactionService: TransactionService) {
+  constructor(private snackBar: SnackbarService, private dateService: DateService, private dialogService: DialogService, private transactionService: TransactionService) {
   }
 
   ngOnInit(): void {
@@ -66,7 +66,7 @@ export class TransactionComponent implements OnInit {
         this.buildStats();
       },
       error: (err) => {
-        this.showSnackBar(err?.message ?? JSON.stringify(err), 'error');
+        this.snackBar.showSnackBar(err?.message ?? JSON.stringify(err), 'error');
       },
       complete: () => this.isLoading = false
     });
@@ -149,11 +149,11 @@ export class TransactionComponent implements OnInit {
     if (transaction.status == "PENDING") {
       this.transactionService.paid(transaction.id).subscribe({
         next: (data) => {
-          this.showSnackBar('Conta paga!', 'success');
+          this.snackBar.showSnackBar('Conta paga!', 'success');
           transaction.status = data.status
         },
         error: (error: any) => {
-          this.showSnackBar(error, "error")
+          this.snackBar.showSnackBar(error, "error")
         },
         complete: () => {
           this.buildStats();
@@ -163,11 +163,11 @@ export class TransactionComponent implements OnInit {
     if (transaction.status == "PAID") {
       this.transactionService.refund(transaction.id).subscribe({
         next: (data) => {
-          this.showSnackBar('Conta estornada!', 'success');
+          this.snackBar.showSnackBar('Conta estornada!', 'success');
           transaction.status = data.status
         },
         error: (error: any) => {
-          this.showSnackBar(error, 'error')
+          this.snackBar.showSnackBar(error, 'error')
         },
         complete: () => {
           this.buildStats();
@@ -181,11 +181,11 @@ export class TransactionComponent implements OnInit {
     if (confirm(`Excluir N° ${transaction.id}?`)) {
       this.transactionService.delete(transaction.id).subscribe({
         next: () => {
-          this.showSnackBar('Lançamento excluída com sucesso!', 'success');
+          this.snackBar.showSnackBar('Lançamento excluída com sucesso!', 'success');
           this.loadAllData();
         },
         error: (error: any) => {
-          this.showSnackBar(error, 'error');
+          this.snackBar.showSnackBar(error, 'error');
         }
       });
     }
@@ -195,9 +195,9 @@ export class TransactionComponent implements OnInit {
     this.transactionService.add(dto).subscribe({
       next: (transaction: TransactionResponse) => {
         this.filteredTransactions.push(transaction);
-        this.showSnackBar('Lançamento criadO com sucesso!', 'success');
+        this.snackBar.showSnackBar('Lançamento criadO com sucesso!', 'success');
       }, error: (error: any) => {
-        this.showSnackBar(error, error);
+        this.snackBar.showSnackBar(error, error);
       },
       complete: () => {
         this.buildStats();
@@ -212,11 +212,11 @@ export class TransactionComponent implements OnInit {
         const idx = this.filteredTransactions.findIndex(a => a.id === id);
         if (idx !== -1) {
           this.filteredTransactions[idx] = transaction;
-          this.showSnackBar('Lançamento atualizado com sucesso!', 'success');
+          this.snackBar.showSnackBar('Lançamento atualizado com sucesso!', 'success');
         }
       },
       error: (error: any) => {
-        this.showSnackBar(error, "error");
+        this.snackBar.showSnackBar(error, "error");
       },
       complete: () => {
         this.buildStats();
@@ -249,13 +249,5 @@ export class TransactionComponent implements OnInit {
       default:
         return {text: 'PENDENTE', class: 'chip-pending'};
     }
-  }
-
-  private showSnackBar(message: string, type: 'success' | 'error' | 'info'): void {
-    const config = {
-      duration: 3000,
-      panelClass: [`snackbar-${type}`]
-    };
-    this.snackBar.open(message, 'Fechar', config);
   }
 }

@@ -1,25 +1,20 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {MainContainerComponent} from "../../components/main-container/main-container.component";
 import {PageHeaderComponent} from "../../components/page-header/page-header.component";
-import {
-  SummaryCardsContainerComponent
-} from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
+import {SummaryCardsContainerComponent} from "../../components/summary-card/summary-cards-container/summary-cards-container.component";
 import {SummaryCardComponent} from "../../components/summary-card/summary-card.component";
 import {SearchBarComponent} from "../../components/search-bar/search-bar.component";
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {BankAccountsListComponent} from "../../components/bank-accounts-list/bank-accounts-list.component";
 import {DateService} from '../../core/utils/date/date.util';
 import {PageResponse} from '../../core/interfaces/PageResponse';
-import {
-  BankAccountsDialogComponent
-} from '../../components/bank-accounts-list/bank-accounts-dialog/bank-accounts-dialog.component';
+import {BankAccountsDialogComponent} from '../../components/bank-accounts-list/bank-accounts-dialog/bank-accounts-dialog.component';
 import {DialogService} from '../../core/services/dialog/dialog.service';
 import {BankAccountService} from '../../domain/bank-account/services/bank-account.service';
 import {BankAccount} from '../../domain/bank-account/interfaces/BankAccount';
 import {BankAccountFormData} from '../../domain/bank-account/interfaces/BankAccountFormData';
 import {BankAccountResponse} from '../../domain/bank-account/interfaces/BankAccountResponse';
-import {BankAccountCardsInfo} from '../../domain/bank-account/interfaces/BankAccountCardsInfo';
 import {forkJoin} from 'rxjs';
+import {SnackbarService} from '../../core/services/snack-bar/snackbar.service';
 
 
 @Component({
@@ -44,7 +39,7 @@ export class BankAccountComponent implements OnInit {
     return this.filteredBankAccounts;
   }
 
-  constructor(private snackBar: MatSnackBar, private dateService: DateService, private bankAccountService: BankAccountService, private dialogService: DialogService) {
+  constructor(private snackBar: SnackbarService, private dateService: DateService, private bankAccountService: BankAccountService, private dialogService: DialogService) {
   }
 
   ngOnInit(): void {
@@ -60,20 +55,12 @@ export class BankAccountComponent implements OnInit {
         this.filteredBankAccounts = data.content;
       },
       error: (error: any) => {
-        this.showSnackBar(error.message, 'error');
+        this.snackBar.showSnackBar(error.message, 'error');
       },
       complete: () => {
         this.buildStats();
       }
     })
-
-    // setTimeout(() => {
-    //   this.filteredBankAccounts = this.filteredBankAccounts.filter(account =>
-    //     this.showInactive ? true : account.active
-    //   );
-    //   this.totalBankAccounts = this.filteredBankAccounts.length;
-    //   this.isLoading = false;
-    // }, 500);
   }
 
   onSearch(textInput: string): void {
@@ -119,11 +106,11 @@ export class BankAccountComponent implements OnInit {
     const action = bankAccount.active ? 'desativada' : 'ativada';
     this.bankAccountService.deactivate(bankAccount.id).subscribe({
       next: () => {
-        this.showSnackBar(`Conta ${action} com sucesso!`, 'success');
+        this.snackBar.showSnackBar(`Conta ${action} com sucesso!`, 'success');
         bankAccount.active = !bankAccount.active
       },
       error: (error: any) => {
-        this.showSnackBar(error.message, 'error');
+        this.snackBar.showSnackBar(error.message, 'error');
       }
     });
 
@@ -133,11 +120,11 @@ export class BankAccountComponent implements OnInit {
     if (confirm(`Tem certeza que deseja excluir a conta "${account.name}"?`)) {
       this.bankAccountService.delete(account.id).subscribe({
         next: () => {
-          this.showSnackBar(`Conta deletada com sucesso!`, 'success');
+          this.snackBar.showSnackBar(`Conta deletada com sucesso!`, 'success');
           this.loadBankAccounts();
         },
         error: (error: any) => {
-          this.showSnackBar(error.message, 'error');
+          this.snackBar.showSnackBar(error.message, 'error');
         }
       })
     }
@@ -164,7 +151,7 @@ export class BankAccountComponent implements OnInit {
         this.mostUsed.set(mostUsed)
       },
       error: (err) => {
-        this.showSnackBar(err?.message ?? JSON.stringify(err), 'error');
+        this.snackBar.showSnackBar(err?.message ?? JSON.stringify(err), 'error');
       },
       complete: () => this.isLoading = false
     });
@@ -173,11 +160,11 @@ export class BankAccountComponent implements OnInit {
   private createBankAccount(formData: BankAccountFormData): void {
     this.bankAccountService.add(formData).subscribe({
       next: (data: BankAccountResponse) => {
-        this.showSnackBar('Conta criada com sucesso!', 'success');
+        this.snackBar.showSnackBar('Conta criada com sucesso!', 'success');
         this.loadBankAccounts();
       },
       error: (error: any) => {
-        this.showSnackBar(error, "error");
+        this.snackBar.showSnackBar(error, "error");
       }
     })
   }
@@ -188,11 +175,11 @@ export class BankAccountComponent implements OnInit {
         const accountIndex = this.filteredBankAccounts.findIndex(a => a.id === id);
         if (accountIndex !== -1) {
           this.filteredBankAccounts[accountIndex] = data;
-          this.showSnackBar('Conta atualizada com sucesso!', 'success');
+          this.snackBar.showSnackBar('Conta atualizada com sucesso!', 'success');
         }
       },
       error: (error: any) => {
-        this.showSnackBar(error, "error");
+        this.snackBar.showSnackBar(error, "error");
       }
     })
 
@@ -209,15 +196,6 @@ export class BankAccountComponent implements OnInit {
 
   getStatusColor(active: boolean): string {
     return active ? '#4CAF50' : '#757575';
-  }
-
-  private showSnackBar(message: string, type: 'success' | 'error' | 'info'): void {
-    const config = {
-      duration: 3000,
-      panelClass: [`snackbar-${type}`]
-    };
-
-    this.snackBar.open(message, 'Fechar', config);
   }
 
 }

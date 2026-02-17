@@ -13,12 +13,17 @@ import {PageHeaderComponent} from "../../components/page-header/page-header.comp
 import {MainContainerComponent} from '../../components/main-container/main-container.component';
 import {CategoryTotals} from '../../domain/category/interfaces/CategoryTotals';
 import {DateService} from '../../core/utils/date/date.util';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {TransactionResponse} from '../../domain/transaction/interfaces/TransactionResponse';
 import {CategoryService} from '../../domain/category/services/category.service';
 import {TransactionService} from '../../domain/transaction/services/transaction.service';
 import {BankAccountService} from '../../domain/bank-account/services/bank-account.service';
 import {Router} from '@angular/router';
+import {DialogService} from '../../core/services/dialog/dialog.service';
+import {
+  TransactionDialogComponent
+} from '../../components/transactions-list/transactions-dialog/transaction-dialog.component';
+import {TransactionFormData} from '../../domain/transaction/interfaces/TransactionFormData';
+import {SnackbarService} from '../../core/services/snack-bar/snackbar.service';
 
 export interface SummaryData {
   totalBalance: number;
@@ -49,9 +54,9 @@ export class DashboardComponent implements OnInit {
 
   categories: CategoryTotals[] = []
 
-  recentAccounts: TransactionResponse[] = [];
+  recentTransactions: TransactionResponse[] = [];
 
-  constructor(private categoryService: CategoryService, private snackBar: MatSnackBar, private transactionService: TransactionService, private bankAccountService: BankAccountService, private dateService: DateService, private router: Router) {
+  constructor(private categoryService: CategoryService, private snackBar: SnackbarService, private transactionService: TransactionService, private dialogService: DialogService, private bankAccountService: BankAccountService, private dateService: DateService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -65,7 +70,7 @@ export class DashboardComponent implements OnInit {
           this.totalAmountOut = data;
         },
         error: (error: any) => {
-          this.showSnackBar(error, "error");
+          this.snackBar.showSnackBar(error, "error");
         }
       });
 
@@ -75,7 +80,7 @@ export class DashboardComponent implements OnInit {
           this.totalAmountIn = data;
         },
         error: (error: any) => {
-          this.showSnackBar(error, "error");
+          this.snackBar.showSnackBar(error, "error");
         }
       });
 
@@ -85,7 +90,7 @@ export class DashboardComponent implements OnInit {
           this.currentTotalBalance = data;
         },
         error: (error: any) => {
-          this.showSnackBar(error, "error");
+          this.snackBar.showSnackBar(error, "error");
         }
       });
   }
@@ -101,10 +106,10 @@ export class DashboardComponent implements OnInit {
     this.transactionService.getByExpirationDateBetweenAndType(formattedStartDate, formattedEndDate, 'PASSIVO', this.currentPage).subscribe(
       {
         next: (data) => {
-          this.recentAccounts = data.content;
+          this.recentTransactions = data.content;
         },
         error: (error: any) => {
-          this.showSnackBar(error, "error");
+          this.snackBar.showSnackBar(error, "error");
         }
       });
     this.categoryService.expensesByCategory().subscribe({
@@ -112,7 +117,7 @@ export class DashboardComponent implements OnInit {
         this.categories = data;
       },
       error: (error: any) => {
-        this.showSnackBar(error, "error");
+        this.snackBar.showSnackBar(error, "error");
       }
     });
   }
@@ -133,7 +138,7 @@ export class DashboardComponent implements OnInit {
       case 'PAID':
         return '#2cad31ff';
       case 'PENDING':
-        return '#ff9900c7';
+        return 'rgba(193,134,52,0.78)';
       case 'OVERDUE':
         return '#F44336';
       default:
@@ -154,22 +159,44 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  onNewAccount(): void {
-    // TODO: Navegar para a página de criação de conta
-    // this.router.navigate(['/accounts/new']);
+  onOpenTransaction(transaction: TransactionResponse) {
+    const ref = this.dialogService.open(
+      TransactionDialogComponent,
+      {
+        mode: 'edit',
+        value: {
+          description: transaction.description,
+          amount: transaction.amount,
+          category: transaction.category.name,
+          expirationDate: transaction.expirationDate,
+          status: transaction.status == "PAID" ? "PAGO" : "PENDENTE",
+          bankAccount: transaction.bankAccount.name,
+          type: transaction.type == "PASSIVO" ? "PASSIVO" : "ATIVO"
+        },
+      }
+    );
+
+    ref.afterClosed().subscribe(formData => {
+      if (!formData) return;
+      this.updateTransaction(transaction.id, formData);
+    });
+  }
+
+  updateTransaction(id: number,formData: TransactionFormData) {
+    this.transactionService.update(id ,formData).subscribe({
+      next: (transaction) => {
+        this.snackBar.showSnackBar('Lançamento atualizado com sucesso!', 'success');
+      },
+      error: (error: any) => {
+        this.snackBar.showSnackBar(error, "error");
+      },
+      complete: () => {
+        this.loadDashboardData();
+      }
+    })
   }
 
   onViewAllAccounts(): void {
-    // TODO: Navegar para a página de listagem de contas
     this.router.navigate(['/transactions']);
-  }
-
-  private showSnackBar(message: string, type: 'success' | 'error' | 'info'): void {
-    const config = {
-      duration: 3000,
-      panelClass: [`snackbar-${type}`]
-    };
-
-    this.snackBar.open(message, 'Fechar', config);
   }
 }

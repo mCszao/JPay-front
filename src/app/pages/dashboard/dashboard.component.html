@@ -40,33 +40,33 @@
       </mat-card-content>
     </mat-card>
 
-    <!-- Recent Accounts Section -->
     <mat-card class="recent-accounts-card">
       <mat-card-header>
-        <mat-card-title>Despesas a vencer no próximo mês</mat-card-title>
         <mat-card-subtitle>
-          <button color="primary" (click)="onViewAllAccounts()">Ver todas</button>
+          <button matButton (click)="onViewAllAccounts()">Ver todas</button>
         </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <div class="accounts-list">
-          @if (recentAccounts.length === 0) {
+          @if (recentTransactions.length === 0) {
             <p class="accounts-list-empty">Sem vencimentos</p>
           }
-          <div class="account-item" *ngFor="let account of recentAccounts">
-            <div class="account-info">
-              <h4>{{ account.description }}</h4>
-              <p>{{ account.category.name }} • Vencimento em {{ formatDate(account.expirationDate) }}</p>
+          @for (transaction of recentTransactions; track transaction.id) {
+            <div class="account-item" (click)="onOpenTransaction(transaction)">
+              <div class="account-info">
+                <h4>{{ transaction.description }}</h4>
+                <p>{{ transaction.category.name }} • Vencimento em {{ formatDate(transaction.expirationDate) }}</p>
+              </div>
+              <div class="account-details">
+                <p class="account-amount">{{ formatCurrency(transaction.amount) }}</p>
+                <mat-chip
+                  [style.background-color]="getStatusColor(transaction.status)"
+                  class="status-chip">
+                  {{ getStatusText(transaction.status) }}
+                </mat-chip>
+              </div>
             </div>
-            <div class="account-details">
-              <p class="account-amount">{{ formatCurrency(account.amount) }}</p>
-              <!-- <mat-chip
-                [style.background-color]="getStatusColor(account.status)"
-                class="status-chip">
-                {{ getStatusText(account.status) }}
-              </mat-chip> -->
-            </div>
-          </div>
+          }
         </div>
       </mat-card-content>
     </mat-card>

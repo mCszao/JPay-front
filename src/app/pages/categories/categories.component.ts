@@ -1,5 +1,4 @@
 import {Component, OnInit, signal} from '@angular/core';
-import {MatSnackBar} from '@angular/material/snack-bar';
 
 import {MainContainerComponent} from "../../components/main-container/main-container.component";
 import {PageHeaderComponent} from "../../components/page-header/page-header.component";
@@ -16,6 +15,7 @@ import {DialogService} from '../../core/services/dialog/dialog.service';
 import {CategoryResponse} from '../../domain/category/interfaces/CategoryResponse';
 import {DateService} from '../../core/utils/date/date.util';
 import {CategoryService} from '../../domain/category/services/category.service';
+import {SnackbarService} from '../../core/services/snack-bar/snackbar.service';
 
 @Component({
   selector: 'app-categories',
@@ -40,7 +40,7 @@ export class CategoriesComponent implements OnInit {
   }
 
 
-  constructor(private snackBar: MatSnackBar, private dialogService: DialogService, private categoryService: CategoryService, private dateService: DateService) {
+  constructor(private snackBar: SnackbarService, private dialogService: DialogService, private categoryService: CategoryService, private dateService: DateService) {
   }
 
   ngOnInit(): void {
@@ -54,7 +54,7 @@ export class CategoriesComponent implements OnInit {
         this.filteredCategories = categories.content;
       },
       error: (error: any) => {
-        this.showSnackBar(error.message, 'error');
+        this.snackBar.showSnackBar(error.message, 'error');
       },
       complete: () => {
         this.buildStats();
@@ -104,12 +104,12 @@ export class CategoriesComponent implements OnInit {
 
     this.categoryService.deactivate(category.id).subscribe({
       next: () => {
-        this.showSnackBar(`Categoria ${action}da com sucesso!`, 'success');
+        this.snackBar.showSnackBar(`Categoria ${action}da com sucesso!`, 'success');
         category.active = !category.active;
         this.buildStats();
       },
       error: (error: any) => {
-        this.showSnackBar(error.message, 'error');
+        this.snackBar.showSnackBar(error.message, 'error');
       }
     })
   }
@@ -119,11 +119,11 @@ export class CategoriesComponent implements OnInit {
       // TODO: Implementar chamada da API
       this.categoryService.delete(category.id).subscribe({
         next: () => {
-          this.showSnackBar('Categoria excluída com sucesso!', 'success');
+          this.snackBar.showSnackBar('Categoria excluída com sucesso!', 'success');
           this.loadCategories();
         },
         error: (error: any) => {
-          this.showSnackBar(error.message, 'error');
+          this.snackBar.showSnackBar(error.message, 'error');
         }
       })
     }
@@ -138,10 +138,10 @@ export class CategoriesComponent implements OnInit {
     this.categoryService.add(formData).subscribe({
       next: (category: CategoryResponse) => {
         this.filteredCategories.push(category);
-        this.showSnackBar('Categoria criada com sucesso!', 'success');
+        this.snackBar.showSnackBar('Categoria criada com sucesso!', 'success');
       },
       error: (error: any) => {
-        this.showSnackBar(error.message, 'error');
+        this.snackBar.showSnackBar(error.message, 'error');
       }
     })
     this.buildStats();
@@ -153,11 +153,11 @@ export class CategoriesComponent implements OnInit {
         const categoryIndex = this.filteredCategories.findIndex(c => c.id === id);
         if (categoryIndex !== -1) {
           this.filteredCategories[categoryIndex] = category;
-          this.showSnackBar('Categoria atualizada com sucesso!', 'success');
+          this.snackBar.showSnackBar('Categoria atualizada com sucesso!', 'success');
         }
       },
       error: (error: any) => {
-        this.showSnackBar(error.message, 'error');
+        this.snackBar.showSnackBar(error.message, 'error');
       }
     })
     this.buildStats();
@@ -183,17 +183,8 @@ export class CategoriesComponent implements OnInit {
         this.mostUsedCategorie.set(category.id > 0 ? category.name : 'Sem lançamentos cadastrados');
       }
       , error: (error: any) => {
-        this.showSnackBar(error, "error");
+        this.snackBar.showSnackBar(error, "error");
       }
     })
-  }
-
-  private showSnackBar(message: string, type: 'success' | 'error' | 'info'): void {
-    const config = {
-      duration: 3000,
-      panelClass: [`snackbar-${type}`]
-    };
-
-    this.snackBar.open(message, 'Fechar', config);
   }
 }
